@@ -14,7 +14,7 @@ class FetchDependencyUpdatesJob < ApplicationJob
   private
 
   def octokit_client
-    token = Settings.github.auth_token.presence
+    token = Settings.github_auth_token.presence || ENV["GH_ACCESS_TOKEN"].presence
     token ? Octokit::Client.new(access_token: token) : Octokit::Client.new
   end
 

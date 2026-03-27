@@ -23,6 +23,7 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
     allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
     allow(ApplicationController).to receive(:render).and_return("<div></div>")
     allow(Settings).to receive(:update_branch).and_return("update-dependencies")
+    allow(Settings).to receive(:github_auth_token).and_return(nil)
   end
 
   describe "#perform" do
@@ -101,6 +102,40 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
 
       it "does not raise an error" do
         expect { described_class.perform_now }.not_to raise_error
+      end
+    end
+
+    context "when github_auth_token is set in Settings" do
+      before { allow(Settings).to receive(:github_auth_token).and_return("settings_token") }
+
+      it "passes the token to Octokit" do
+        described_class.perform_now
+        expect(Octokit::Client).to have_received(:new).with(access_token: "settings_token")
+      end
+    end
+
+    context "when GH_ACCESS_TOKEN env var is set" do
+      before do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("GH_ACCESS_TOKEN").and_return("env_token")
+      end
+
+      it "passes the env token to Octokit" do
+        described_class.perform_now
+        expect(Octokit::Client).to have_received(:new).with(access_token: "env_token")
+      end
+    end
+
+    context "when Settings token takes precedence over env var" do
+      before do
+        allow(Settings).to receive(:github_auth_token).and_return("settings_token")
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("GH_ACCESS_TOKEN").and_return("env_token")
+      end
+
+      it "uses the Settings token" do
+        described_class.perform_now
+        expect(Octokit::Client).to have_received(:new).with(access_token: "settings_token")
       end
     end
   end
