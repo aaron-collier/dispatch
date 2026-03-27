@@ -52,13 +52,40 @@
 
     <%# User profile -%>
     <div class="dispatch-sidebar__user">
-      <div class="dispatch-sidebar__avatar">AC</div>
+      <% if user.github_profile_url %>
+        <a href="<%= user.github_profile_url %>" target="_blank" rel="noopener noreferrer" class="text-decoration-none flex-shrink-0" aria-label="<%= user.name %> on GitHub">
+          <% if user.avatar_url %>
+            <img src="<%= user.avatar_url %>" alt="<%= user.name %>"
+                 class="dispatch-sidebar__avatar"
+                 style="border-radius: 50%; width: 28px; height: 28px; object-fit: cover;">
+          <% else %>
+            <div class="dispatch-sidebar__avatar"><%= user.initials %></div>
+          <% end %>
+        </a>
+      <% else %>
+        <% if user.avatar_url %>
+          <img src="<%= user.avatar_url %>" alt="<%= user.name %>"
+               class="dispatch-sidebar__avatar flex-shrink-0"
+               style="border-radius: 50%; width: 28px; height: 28px; object-fit: cover;">
+        <% else %>
+          <div class="dispatch-sidebar__avatar flex-shrink-0"><%= user.initials %></div>
+        <% end %>
+      <% end %>
+
       <div class="dispatch-sidebar__user-info min-w-0">
-        <div style="font-size: 0.8125rem; font-weight: 600; color: var(--dispatch-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-          Aaron Collier
-        </div>
+        <% if user.github_profile_url %>
+          <a href="<%= user.github_profile_url %>" target="_blank" rel="noopener noreferrer"
+             class="text-decoration-none"
+             style="font-size: 0.8125rem; font-weight: 600; color: var(--dispatch-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
+            <%= user.name %>
+          </a>
+        <% else %>
+          <div style="font-size: 0.8125rem; font-weight: 600; color: var(--dispatch-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <%= user.name %>
+          </div>
+        <% end %>
         <div style="font-size: 0.6875rem; color: var(--dispatch-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-          aaron@dispatch.dev
+          <%= user.email %>
         </div>
       </div>
     </div>

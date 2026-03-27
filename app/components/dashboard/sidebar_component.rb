@@ -31,6 +31,12 @@ module Dashboard
       }
     ].freeze
 
+    def initialize(user: UserPresenter.new)
+      @user = user
+    end
+
+    attr_reader :user
+
     def nav_sections
       NAV_SECTIONS
     end
