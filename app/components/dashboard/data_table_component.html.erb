@@ -1,0 +1,32 @@
+<div style="overflow-x: auto;">
+  <table class="dispatch-table">
+    <thead>
+      <tr>
+        <th style="text-align: left;">Test</th>
+        <th style="text-align: left;">Suite</th>
+        <th style="text-align: right;">Fail Rate</th>
+        <th style="text-align: right;">Last Seen</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% rows.each do |row| %>
+        <tr>
+          <td>
+            <span class="dispatch-table__name font-mono"><%= row.name %></span>
+          </td>
+          <td>
+            <span class="badge" style="background-color: var(--dispatch-card-bg-elevated); color: var(--dispatch-text-muted); font-size: 0.6875rem; font-weight: 400;">
+              <%= row.suite %>
+            </span>
+          </td>
+          <td class="dispatch-table__fail" style="text-align: right;">
+            <%= row.fail_rate %>%
+          </td>
+          <td class="dispatch-table__muted" style="text-align: right;">
+            <%= row.last_seen %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

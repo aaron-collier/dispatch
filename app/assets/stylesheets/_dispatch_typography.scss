@@ -1,0 +1,60 @@
+// =============================================================
+// Dispatch Typography
+// =============================================================
+
+body {
+  font-family: 'Inter', var(--bs-font-sans-serif);
+  color: var(--dispatch-text-secondary);
+  background-color: var(--dispatch-page-bg);
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', var(--bs-font-monospace);
+}
+
+// ALL-CAPS muted label — used for card headers, stat labels, table headers
+.dispatch-label {
+  font-size: 0.6875rem;    // 11px
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dispatch-text-muted);
+  line-height: 1;
+}
+
+// Large stat value — 28px bold
+.dispatch-stat-value {
+  font-size: 1.75rem;      // 28px
+  font-weight: 700;
+  line-height: 1;
+  color: var(--dispatch-text-primary);
+}
+
+// Section group header in sidebar
+.dispatch-section-header {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dispatch-text-muted);
+  padding-block: 0.5rem;
+  margin-top: 1rem;
+  display: block;
+}
+
+// Trend delta text
+.dispatch-delta {
+  font-size: 0.75rem;     // 12px
+  font-weight: 500;
+  line-height: 1;
+
+  &--up   { color: var(--dispatch-success); }
+  &--down { color: var(--dispatch-danger); }
+}
+
+// Monospace code reference in activity feeds
+.dispatch-code-ref {
+  font-family: 'JetBrains Mono', var(--bs-font-monospace);
+  font-size: 0.75rem;
+  color: var(--dispatch-purple-light);
+}

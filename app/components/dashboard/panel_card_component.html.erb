@@ -1,0 +1,13 @@
+<div class="dispatch-card h-100">
+  <div class="dispatch-card__header">
+    <span class="dispatch-label">
+      <%= title %>
+    </span>
+    <% if filter_options %>
+      <%= render Dashboard::FilterPillComponent.new(options: filter_options) %>
+    <% end %>
+  </div>
+  <div class="dispatch-card__body">
+    <%= body %>
+  </div>
+</div>

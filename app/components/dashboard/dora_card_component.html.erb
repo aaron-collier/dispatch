@@ -1,0 +1,20 @@
+<div class="dispatch-card p-3 h-100">
+  <div class="d-flex align-items-center justify-content-between mb-2">
+    <span class="dispatch-label">
+      <%= label %>
+      <i class="bi bi-info-circle ms-1" style="font-size: 0.625rem;"></i>
+    </span>
+    <i class="bi <%= icon %>" style="font-size: 0.875rem; color: var(--dispatch-text-muted);"></i>
+  </div>
+
+  <div class="mb-1" style="font-size: 1.5rem; font-weight: 700; line-height: 1; color: var(--dispatch-text-primary);">
+    <%= value %><span style="font-size: 0.875rem; font-weight: 400; color: var(--dispatch-text-muted); margin-left: 0.25rem;"><%= unit %></span>
+  </div>
+
+  <div class="dispatch-dora-tier mt-2">
+    <span class="dispatch-dora-tier__label" style="color: <%= tier_color %>;">
+      <%= tier_label %>
+    </span>
+    <div class="dispatch-dora-tier__bar dispatch-dora-tier__bar--<%= tier_css_modifier %>"></div>
+  </div>
+</div>

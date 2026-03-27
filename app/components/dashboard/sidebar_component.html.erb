@@ -1,0 +1,66 @@
+<aside class="dispatch-sidebar">
+  <div class="dispatch-sidebar__inner">
+    <%# Logo -%>
+    <a href="/" class="dispatch-sidebar__logo text-decoration-none">
+      <div class="dispatch-sidebar__logo-mark">D</div>
+      <span class="dispatch-sidebar__logo-text fw-bold" style="font-size: 0.9375rem; color: var(--dispatch-text-primary);">
+        <span style="color: var(--dispatch-purple);">DIS</span><span style="color: var(--dispatch-text-muted);">PATCH</span>
+      </span>
+    </a>
+
+    <%# Search -%>
+    <div class="dispatch-sidebar__search">
+      <input type="search" placeholder="Search…" aria-label="Search">
+      <span class="dispatch-sidebar__search-hint">⌘K</span>
+    </div>
+
+    <%# Nav sections -%>
+    <nav aria-label="Main navigation">
+      <% nav_sections.each do |section| %>
+        <span class="dispatch-section-header dispatch-sidebar__label"><%= section[:label] %></span>
+        <ul class="list-unstyled mb-0">
+          <% section[:items].each do |item| %>
+            <li>
+              <a href="<%= item[:path] %>"
+                 class="dispatch-sidebar__nav-link <%= 'active' if item[:active] %>">
+                <i class="bi <%= item[:icon] %>"></i>
+                <span class="dispatch-sidebar__label"><%= item[:label] %></span>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </nav>
+
+    <%# Spacer -%>
+    <div class="flex-grow-1"></div>
+
+    <%# Theme toggle -%>
+    <div class="dispatch-theme-toggle">
+      <i class="bi bi-moon-stars" style="font-size: 0.75rem; color: var(--dispatch-text-muted);"></i>
+      <div class="form-check form-switch mb-0 ms-1">
+        <input class="form-check-input"
+               type="checkbox"
+               role="switch"
+               id="theme-toggle"
+               data-theme-toggle
+               data-action="change->theme#toggle"
+               aria-label="Toggle light/dark mode">
+        <label class="form-check-label" for="theme-toggle" style="font-size: 0.75rem; color: var(--dispatch-text-muted);">Light</label>
+      </div>
+    </div>
+
+    <%# User profile -%>
+    <div class="dispatch-sidebar__user">
+      <div class="dispatch-sidebar__avatar">AC</div>
+      <div class="dispatch-sidebar__user-info min-w-0">
+        <div style="font-size: 0.8125rem; font-weight: 600; color: var(--dispatch-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          Aaron Collier
+        </div>
+        <div style="font-size: 0.6875rem; color: var(--dispatch-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          aaron@dispatch.dev
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>

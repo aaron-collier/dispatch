@@ -1,0 +1,113 @@
+<%# Mobile header — hamburger, visible < 768px only %>
+<div class="dispatch-mobile-header" data-controller="sidebar">
+  <button class="btn btn-link p-0 text-decoration-none"
+          data-action="click->sidebar#open"
+          aria-label="Open navigation">
+    <i class="bi bi-list" style="font-size: 1.25rem; color: var(--dispatch-text-primary);"></i>
+  </button>
+  <span class="ms-3 fw-semibold" style="color: var(--dispatch-text-primary); font-size: 0.9375rem;">Dispatch</span>
+
+  <%# Bootstrap Offcanvas drawer for mobile %>
+  <div class="offcanvas offcanvas-start"
+       id="sidebar-drawer"
+       data-sidebar-target="drawer"
+       style="width: 220px; background-color: var(--dispatch-sidebar-bg); border-right: 1px solid var(--dispatch-card-border);"
+       tabindex="-1"
+       aria-labelledby="sidebar-drawer-label">
+    <div class="offcanvas-body p-0">
+      <%= render Dashboard::SidebarComponent.new %>
+    </div>
+  </div>
+</div>
+
+<%# Main layout wrapper %>
+<div class="dispatch-root">
+  <%# Desktop / tablet sidebar %>
+  <%= render Dashboard::SidebarComponent.new %>
+
+  <%# Scrollable content area %>
+  <main class="dispatch-content">
+
+    <%# ── Row 1: Stat cards (3-up) ───────────────────────── %>
+    <div class="row g-3 mb-3">
+      <% @presenter.stat_cards.each do |card| %>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <%= render Dashboard::StatCardComponent.new(
+            label:           card.label,
+            value:           card.value,
+            delta:           card.delta,
+            delta_direction: card.delta_direction,
+            sparkline_data:  card.sparkline_data
+          ) %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# ── Row 2: Stability | Activity ─────────────────────── %>
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-lg-6">
+        <%= render Dashboard::PanelCardComponent.new(
+          title:          "Stability Overview",
+          filter_options: [ "Last Month", "Last Week", "Last 90 Days" ]
+        ) do |c| %>
+          <% c.with_body do %>
+            <%= render Dashboard::HealthScoreComponent.new(
+              score:    @presenter.health_score[:score],
+              label:    @presenter.health_score[:label],
+              segments: @presenter.health_segments
+            ) %>
+            <div class="mt-3">
+              <%= render Dashboard::DataTableComponent.new(rows: @presenter.flaky_tests) %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <%= render Dashboard::PanelCardComponent.new(title: "Recent Activity") do |c| %>
+          <% c.with_body do %>
+            <%= render Dashboard::ActivityFeedComponent.new(activities: @presenter.activity_feed) %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <%# ── Row 3: Charts ────────────────────────────────────── %>
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-lg-8">
+        <%= render Dashboard::PanelCardComponent.new(
+          title:          "Deployment Cadence",
+          filter_options: [ "Last 6 Months", "Last 3 Months", "Last Year" ]
+        ) do |c| %>
+          <% c.with_body do %>
+            <%= render Dashboard::LineChartComponent.new(data: @presenter.line_chart_data) %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <%= render Dashboard::PanelCardComponent.new(title: "Test Suite Health") do |c| %>
+          <% c.with_body do %>
+            <%= render Dashboard::DonutChartComponent.new(slices: @presenter.donut_chart_data) %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <%# ── Row 4: DORA metrics (4-up) ──────────────────────── %>
+    <div class="row g-3 mb-3">
+      <% @presenter.dora_metrics.each do |metric| %>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <%= render Dashboard::DoraCardComponent.new(
+            label: metric.label,
+            value: metric.value,
+            unit:  metric.unit,
+            tier:  metric.tier,
+            icon:  metric.icon
+          ) %>
+        </div>
+      <% end %>
+    </div>
+
+  </main>
+</div>

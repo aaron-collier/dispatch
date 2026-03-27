@@ -1,0 +1,78 @@
+// =============================================================
+// Dispatch Design Tokens — CSS Custom Properties
+// Dark is the default (applied to :root). Light mode overrides
+// when [data-bs-theme="light"] is set on <html>.
+// Accent colors are constant across both modes.
+// =============================================================
+
+:root,
+[data-bs-theme="dark"] {
+  --dispatch-sidebar-bg:        #09090B;
+  --dispatch-page-bg:           #0F0F10;
+  --dispatch-card-bg:           #111113;
+  --dispatch-card-bg-elevated:  #1C1C1F;
+  --dispatch-card-border:       #27272A;
+  --dispatch-card-border-hover: #3F3F46;
+  --dispatch-text-primary:      #FFFFFF;
+  --dispatch-text-secondary:    #A1A1AA;
+  --dispatch-text-muted:        #71717A;
+  --dispatch-input-bg:          #111113;
+  --dispatch-input-border:      #27272A;
+  --dispatch-scrollbar-thumb:   #27272A;
+}
+
+[data-bs-theme="light"] {
+  --dispatch-sidebar-bg:        #FFFFFF;
+  --dispatch-page-bg:           #F4F4F5;
+  --dispatch-card-bg:           #FFFFFF;
+  --dispatch-card-bg-elevated:  #F4F4F5;
+  --dispatch-card-border:       #E4E4E7;
+  --dispatch-card-border-hover: #D4D4D8;
+  --dispatch-text-primary:      #09090B;
+  --dispatch-text-secondary:    #52525B;
+  --dispatch-text-muted:        #71717A;
+  --dispatch-input-bg:          #FFFFFF;
+  --dispatch-input-border:      #E4E4E7;
+  --dispatch-scrollbar-thumb:   #D4D4D8;
+}
+
+// Accent colors — identical in both modes
+:root {
+  --dispatch-success:        #22C55E;
+  --dispatch-success-muted:  #16A34A;
+  --dispatch-success-bg:     #052E16;
+  --dispatch-danger:         #EF4444;
+  --dispatch-danger-muted:   #DC2626;
+  --dispatch-danger-bg:      #450A0A;
+  --dispatch-warning:        #F59E0B;
+  --dispatch-warning-muted:  #D97706;
+  --dispatch-warning-bg:     #451A03;
+  --dispatch-info:           #3B82F6;
+  --dispatch-info-bg:        #172554;
+  --dispatch-purple:         #8B5CF6;
+  --dispatch-purple-dark:    #7C3AED;
+  --dispatch-purple-light:   #A78BFA;
+
+  // Severity scale
+  --dispatch-critical: #EF4444;
+  --dispatch-high:     #F97316;
+  --dispatch-medium:   #EAB308;
+  --dispatch-low:      #D4D4D8;
+
+  // DORA tier colors
+  --dispatch-dora-elite: #4ADE80;
+  --dispatch-dora-high:  #60A5FA;
+  --dispatch-dora-mid:   #FACC15;
+  --dispatch-dora-low:   #F87171;
+
+  // Chart colors
+  --dispatch-line-chart:   #6366F1;
+  --dispatch-chart-violet: #7C3AED;
+  --dispatch-chart-orange: #F97316;
+  --dispatch-chart-amber:  #F59E0B;
+
+  // Sparkline colors
+  --dispatch-spark-red:   #F87171;
+  --dispatch-spark-teal:  #2DD4BF;
+  --dispatch-spark-green: #4ADE80;
+}

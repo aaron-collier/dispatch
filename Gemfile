@@ -66,6 +66,8 @@ end
 group :test do
   # Concise matchers for models, validations, and associations
   gem "shoulda-matchers"
+  # Browser simulation for component and system specs
+  gem "capybara"
 end
 
 group :development do

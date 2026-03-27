@@ -1,0 +1,15 @@
+<div>
+  <% activities.each do |activity| %>
+    <div class="dispatch-feed__item">
+      <div class="dispatch-feed__icon">
+        <i class="bi <%= activity.icon %>" style="color: <%= activity.icon_color %>;"></i>
+      </div>
+      <div class="dispatch-feed__message" title="<%= activity.message %>">
+        <%= activity.message %>
+      </div>
+      <div class="dispatch-feed__meta">
+        <%= activity.timestamp %>
+      </div>
+    </div>
+  <% end %>
+</div>

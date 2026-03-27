@@ -1,0 +1,14 @@
+<div class="dropdown">
+  <button class="dispatch-filter-pill dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <%= selected %>
+    <i class="bi bi-chevron-down"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end" style="background-color: var(--dispatch-card-bg-elevated); border-color: var(--dispatch-card-border);">
+    <% options.each do |option| %>
+      <li>
+        <button class="dropdown-item" style="color: var(--dispatch-text-secondary); font-size: 0.8125rem;"
+                type="button"><%= option %></button>
+      </li>
+    <% end %>
+  </ul>
+</div>
