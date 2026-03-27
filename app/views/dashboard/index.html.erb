@@ -15,7 +15,7 @@
        tabindex="-1"
        aria-labelledby="sidebar-drawer-label">
     <div class="offcanvas-body p-0">
-      <%= render Dashboard::SidebarComponent.new %>
+      <%= render Dashboard::SidebarComponent.new(user: @user) %>
     </div>
   </div>
 </div>
@@ -23,7 +23,7 @@
 <%# Main layout wrapper %>
 <div class="dispatch-root">
   <%# Desktop / tablet sidebar %>
-  <%= render Dashboard::SidebarComponent.new %>
+  <%= render Dashboard::SidebarComponent.new(user: @user) %>
 
   <%# Scrollable content area %>
   <main class="dispatch-content">
