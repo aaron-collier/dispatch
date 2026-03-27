@@ -1,0 +1,19 @@
+<div id="dependency_update_card" class="dispatch-card p-3 h-100">
+  <div class="dispatch-label mb-2">
+    DEPENDENCY UPDATES
+    <i class="bi bi-info-circle ms-1" style="font-size: 0.625rem;"></i>
+  </div>
+
+  <div class="dispatch-stat-value mb-2"><%= open_count %></div>
+
+  <div class="d-flex align-items-center gap-2 flex-wrap">
+    <% sub_line_parts.each_with_index do |part, i| %>
+      <span style="font-size: 0.75rem; font-weight: 500; color: <%= part[:color] %>;">
+        <%= part[:count] %> <%= part[:label] %>
+      </span>
+      <% unless i == sub_line_parts.length - 1 %>
+        <span style="color: var(--dispatch-text-muted); font-size: 0.75rem;">/</span>
+      <% end %>
+    <% end %>
+  </div>
+</div>
