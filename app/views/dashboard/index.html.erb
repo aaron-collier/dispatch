@@ -27,6 +27,21 @@
 
   <%# Scrollable content area %>
   <main class="dispatch-content">
+    <%= turbo_stream_from "system_status" %>
+
+    <%# ── System indicators ───────────────────────────────── %>
+    <div class="dispatch-system-indicators mb-3">
+      <%= render Dashboard::SystemIndicatorComponent.new(
+        key:       "vpn",
+        label:     "VPN",
+        connected: @system_statuses["vpn"]&.connected || false
+      ) %>
+      <%= render Dashboard::SystemIndicatorComponent.new(
+        key:       "control_master",
+        label:     "Control Master",
+        connected: @system_statuses["control_master"]&.connected || false
+      ) %>
+    </div>
 
     <%# ── Row 1: Stat cards (3-up) ───────────────────────── %>
     <div class="row g-3 mb-3">

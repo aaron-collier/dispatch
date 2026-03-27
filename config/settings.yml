@@ -4,3 +4,6 @@ github:
 
 sunetid: testuser
 name: Test User
+
+control_master_host: sdr-infra
+vpn_host: su-vpn.stanford.edu

@@ -378,3 +378,45 @@
   font-size: 0.6875rem;
   color: var(--dispatch-text-muted);
 }
+
+// ── System indicators ─────────────────────────────────────────
+
+.dispatch-system-indicators {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dispatch-system-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--dispatch-card-bg);
+  border: 1px solid var(--dispatch-card-border);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.dispatch-system-indicator__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: indicator-pulse 2s ease-in-out infinite;
+}
+
+.dispatch-system-indicator__label {
+  font-weight: 500;
+  color: var(--dispatch-text-secondary);
+}
+
+.dispatch-system-indicator__status {
+  font-weight: 500;
+}
+
+@keyframes indicator-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
