@@ -1,0 +1,37 @@
+<div>
+  <%# Score -%>
+  <div class="d-flex align-items-baseline gap-2 mb-3">
+    <span style="font-size: 2rem; font-weight: 700; line-height: 1; color: var(--dispatch-success);"><%= score %></span>
+    <span style="font-size: 1rem; color: var(--dispatch-text-secondary);">/ 100 &nbsp;&bull;&nbsp; <%= label %></span>
+  </div>
+
+  <%# Segmented bar -%>
+  <div class="dispatch-health-bar mb-3">
+    <% segments.each do |segment| %>
+      <div class="dispatch-health-bar__segment"
+           style="<%= segment_flex(segment) %>; background-color: <%= segment[:color] %>;"
+           title="<%= segment[:label] %>: <%= segment[:value] %>">
+      </div>
+    <% end %>
+  </div>
+
+  <%# Legend -%>
+  <table style="width: 100%; border-collapse: collapse;">
+    <% segments.each do |segment| %>
+      <tr>
+        <td style="padding: 0.25rem 0; width: 1rem;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 2px; background-color: <%= segment[:color] %>;"></span>
+        </td>
+        <td style="padding: 0.25rem 0.5rem; font-size: 0.8125rem; color: var(--dispatch-text-secondary);">
+          <%= segment[:label] %>
+        </td>
+        <td style="padding: 0.25rem 0; text-align: right; font-size: 0.8125rem; color: var(--dispatch-text-muted);">
+          <%= total.positive? ? "#{(segment[:value].to_f / total * 100).round(1)}%" : "0%" %>
+        </td>
+        <td style="padding: 0.25rem 0 0.25rem 0.75rem; text-align: right; font-size: 0.8125rem; color: var(--dispatch-text-muted);">
+          <%= segment[:value] %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>

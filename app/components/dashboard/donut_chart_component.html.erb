@@ -1,0 +1,40 @@
+<div class="dispatch-donut-chart">
+  <svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <%# Background track -%>
+    <circle cx="60" cy="60" r="44"
+            fill="none"
+            stroke="var(--dispatch-card-bg-elevated)"
+            stroke-width="28"/>
+
+    <%# Segments -%>
+    <g transform="rotate(-90 60 60)">
+      <% segments.each do |seg| %>
+        <circle cx="60" cy="60" r="44"
+                fill="none"
+                stroke="<%= seg[:color] %>"
+                stroke-width="28"
+                stroke-dasharray="<%= seg[:dasharray] %>"
+                stroke-dashoffset="<%= seg[:dashoffset] %>"
+                stroke-linecap="butt"/>
+      <% end %>
+    </g>
+
+    <%# Center label -%>
+    <text x="60" y="56" text-anchor="middle" font-size="16" font-weight="700" fill="var(--dispatch-text-primary)">
+      <%= total.to_i %>
+    </text>
+    <text x="60" y="70" text-anchor="middle" font-size="9" fill="var(--dispatch-text-muted)">TOTAL</text>
+  </svg>
+
+  <div class="dispatch-donut-legend">
+    <% segments.each do |seg| %>
+      <div class="dispatch-donut-legend__item">
+        <div class="dispatch-donut-legend__dot" style="background-color: <%= seg[:color] %>;"></div>
+        <div>
+          <div class="dispatch-donut-legend__label"><%= seg[:label] %></div>
+          <div class="dispatch-donut-legend__sub"><%= seg[:value] %></div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
