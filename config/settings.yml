@@ -7,3 +7,6 @@ name: Test User
 
 control_master_host: sdr-infra
 vpn_host: su-vpn.stanford.edu
+
+repository_source: https://raw.githubusercontent.com/sul-dlss/sdr-deploy/main/config/settings.yml
+update_branch: update-dependencies

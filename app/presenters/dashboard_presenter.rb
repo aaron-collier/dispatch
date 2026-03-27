@@ -9,13 +9,6 @@ class DashboardPresenter
   def stat_cards
     [
       StatCard.new(
-        label: "Bugs Healed",
-        value: "1,284",
-        delta: "+12%",
-        delta_direction: :up,
-        sparkline_data: [ 42, 55, 48, 70, 65, 80, 91, 88, 102, 110 ]
-      ),
-      StatCard.new(
         label: "Lines Refactored",
         value: "84,321",
         delta: "+8.3%",

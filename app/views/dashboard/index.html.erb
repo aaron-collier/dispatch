@@ -28,6 +28,7 @@
   <%# Scrollable content area %>
   <main class="dispatch-content">
     <%= turbo_stream_from "system_status" %>
+    <%= turbo_stream_from "dependency_updates" %>
 
     <%# ── System indicators ───────────────────────────────── %>
     <div class="dispatch-system-indicators mb-3">
@@ -45,6 +46,17 @@
 
     <%# ── Row 1: Stat cards (3-up) ───────────────────────── %>
     <div class="row g-3 mb-3">
+      <%# First slot: live Dependency Updates card %>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <%= render Dashboard::DependencyUpdateCardComponent.new(
+          open_count: @dependency_card[:open_count],
+          passing:    @dependency_card[:passing],
+          building:   @dependency_card[:building],
+          failing:    @dependency_card[:failing]
+        ) %>
+      </div>
+
+      <%# Remaining stat cards from presenter %>
       <% @presenter.stat_cards.each do |card| %>
         <div class="col-12 col-sm-6 col-lg-4">
           <%= render Dashboard::StatCardComponent.new(
