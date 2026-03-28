@@ -4,7 +4,13 @@ Dispatch is a personal devops dashboard for monitoring and managing a group of R
 
 ## Screenshot
 
-> _Screenshot coming soon._
+### Dark mode
+
+<img width="1293" height="754" alt="Screenshot 2026-03-27 at 11 07 49 PM" src="https://github.com/user-attachments/assets/ee3a9347-607a-4162-a253-d96bbf27ca60" />
+
+### Light mode
+
+<img width="1288" height="747" alt="Screenshot 2026-03-27 at 11 08 07 PM" src="https://github.com/user-attachments/assets/7d69bce1-959d-4c14-8827-cbb35e14c8da" />
 
 ---
 
