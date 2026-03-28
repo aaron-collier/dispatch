@@ -2,6 +2,7 @@ github:
   username: octocat
 
 github_auth_token: ~
+anthropic_api_key: ~
 
 sunetid: testuser
 name: Test User

@@ -23,6 +23,8 @@ gem "view_component"
 # Application settings via YAML [https://github.com/rubyconfig/config]
 gem "config"
 gem "octokit"
+gem "aasm"
+gem "ruby_llm"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"

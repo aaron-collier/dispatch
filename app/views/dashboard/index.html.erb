@@ -29,6 +29,7 @@
   <main class="dispatch-content">
     <%= turbo_stream_from "system_status" %>
     <%= turbo_stream_from "dependency_updates" %>
+    <%= turbo_stream_from "integration_tests" %>
 
     <%# ── System indicators ───────────────────────────────── %>
     <div class="dispatch-system-indicators mb-3">
@@ -84,7 +85,7 @@
               segments: @presenter.health_segments
             ) %>
             <div class="mt-3">
-              <%= render Dashboard::DataTableComponent.new(rows: @presenter.flaky_tests) %>
+              <%= render Dashboard::DataTableComponent.new(rows: @presenter.integration_tests) %>
             </div>
           <% end %>
         <% end %>

@@ -1,11 +1,11 @@
-<div style="overflow-x: auto;">
+<div id="integration_tests_table" style="overflow-x: auto;">
   <table class="dispatch-table">
     <thead>
       <tr>
         <th style="text-align: left;">Test</th>
-        <th style="text-align: left;">Suite</th>
+        <th style="text-align: left;">Status</th>
         <th style="text-align: right;">Fail Rate</th>
-        <th style="text-align: right;">Last Seen</th>
+        <th style="text-align: right;">Last Run</th>
       </tr>
     </thead>
     <tbody>
@@ -15,15 +15,22 @@
             <span class="dispatch-table__name font-mono"><%= row.name %></span>
           </td>
           <td>
-            <span class="badge" style="background-color: var(--dispatch-card-bg-elevated); color: var(--dispatch-text-muted); font-size: 0.6875rem; font-weight: 400;">
-              <%= row.suite %>
-            </span>
+            <% if row.status.present? %>
+              <% status_color = { "queuing" => "var(--dispatch-text-muted)", "running" => "var(--dispatch-info)",
+                                  "passed"  => "var(--dispatch-success)",   "failed"  => "var(--dispatch-danger)" }
+                                .fetch(row.status.to_s, "var(--dispatch-text-muted)") %>
+              <span class="badge" style="background-color: var(--dispatch-card-bg-elevated); color: <%= status_color %>; font-size: 0.6875rem; font-weight: 400;">
+                <%= row.status %>
+              </span>
+            <% else %>
+              <span class="dispatch-table__muted">—</span>
+            <% end %>
           </td>
           <td class="dispatch-table__fail" style="text-align: right;">
-            <%= row.fail_rate %>%
+            <%= row.fail_rate.present? ? "#{row.fail_rate}%" : "—" %>
           </td>
           <td class="dispatch-table__muted" style="text-align: right;">
-            <%= row.last_seen %>
+            <%= row.last_run.presence || "—" %>
           </td>
         </tr>
       <% end %>

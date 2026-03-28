@@ -3,8 +3,9 @@ require "rails_helper"
 RSpec.describe Dashboard::DataTableComponent, type: :component do
   let(:rows) do
     [
-      DashboardPresenter::FlakeyTest.new(name: "UserAuthFlow#login_with_sso", suite: "auth",     fail_rate: 38, last_seen: "2h ago"),
-      DashboardPresenter::FlakeyTest.new(name: "PaymentController#charge",    suite: "payments", fail_rate: 24, last_seen: "4h ago")
+      DashboardPresenter::IntegrationTestRow.new(name: "argo_accession",  status: "passed",  fail_rate: nil, last_run: "2h ago"),
+      DashboardPresenter::IntegrationTestRow.new(name: "sul_pub_publish", status: "failed",  fail_rate: nil, last_run: "4h ago"),
+      DashboardPresenter::IntegrationTestRow.new(name: "cocina_check",    status: nil,       fail_rate: nil, last_run: nil)
     ]
   end
 
@@ -17,27 +18,47 @@ RSpec.describe Dashboard::DataTableComponent, type: :component do
 
   it "renders all rows" do
     render_inline(component)
-    expect(page).to have_css("tbody tr", count: 2)
+    expect(page).to have_css("tbody tr", count: 3)
   end
 
   it "renders test names in monospace" do
     render_inline(component)
-    expect(page).to have_css("span.dispatch-table__name.font-mono", text: "UserAuthFlow#login_with_sso")
+    expect(page).to have_css("span.dispatch-table__name.font-mono", text: "argo_accession")
   end
 
-  it "renders suite badges" do
+  it "renders the Status header" do
     render_inline(component)
-    expect(page).to have_text("auth")
-    expect(page).to have_text("payments")
+    expect(page).to have_css("th", text: "Status")
   end
 
-  it "renders fail rates with danger color" do
+  it "renders the Last Run header" do
     render_inline(component)
-    expect(page).to have_css(".dispatch-table__fail", text: "38%")
+    expect(page).to have_css("th", text: "Last Run")
   end
 
-  it "renders last seen timestamps" do
+  it "renders status badges for rows with a status" do
+    render_inline(component)
+    expect(page).to have_css("span.badge", text: "passed")
+    expect(page).to have_css("span.badge", text: "failed")
+  end
+
+  it "renders a dash when status is nil" do
+    render_inline(component)
+    expect(page).to have_css(".dispatch-table__muted", text: "—")
+  end
+
+  it "renders last run timestamps" do
     render_inline(component)
     expect(page).to have_text("2h ago")
+  end
+
+  it "renders a dash for nil fail_rate" do
+    render_inline(component)
+    expect(page).to have_text("—")
+  end
+
+  it "has the turbo stream target id" do
+    render_inline(component)
+    expect(page).to have_css("#integration_tests_table")
   end
 end
