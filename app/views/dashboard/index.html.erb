@@ -74,21 +74,30 @@
     <%# ── Row 2: Stability | Activity ─────────────────────── %>
     <div class="row g-3 mb-3">
       <div class="col-12 col-lg-6">
-        <%= render Dashboard::PanelCardComponent.new(
-          title:          "Stability Overview",
-          filter_options: [ "Last Month", "Last Week", "Last 90 Days" ]
-        ) do |c| %>
-          <% c.with_body do %>
-            <%= render Dashboard::HealthScoreComponent.new(
-              score:    @presenter.health_score[:score],
-              label:    @presenter.health_score[:label],
-              segments: @presenter.health_segments
+        <div class="dispatch-card h-100">
+          <div class="dispatch-card__header">
+            <span class="dispatch-label">Stability Overview</span>
+            <%= render Dashboard::FilterPillComponent.new(
+              options:     @stats.period_options,
+              selected:    @stats.selected_period_label,
+              link_param:  "stability_period",
+              base_path:   root_path,
+              turbo_frame: "stability-panel"
             ) %>
-            <div class="mt-3">
-              <%= render Dashboard::DataTableComponent.new(rows: @presenter.integration_tests) %>
-            </div>
-          <% end %>
-        <% end %>
+          </div>
+          <div class="dispatch-card__body">
+            <%= turbo_frame_tag "stability-panel" do %>
+              <%= render Dashboard::HealthScoreComponent.new(
+                score:    @stats.health_score[:score],
+                label:    @stats.health_score[:label],
+                segments: @stats.health_segments
+              ) %>
+              <div class="mt-3">
+                <%= render Dashboard::DataTableComponent.new(rows: @stats.test_rows) %>
+              </div>
+            <% end %>
+          </div>
+        </div>
       </div>
 
       <div class="col-12 col-lg-6">

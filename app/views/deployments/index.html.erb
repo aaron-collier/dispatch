@@ -45,14 +45,16 @@
                 selected:     @presenter.selected_env_label,
                 link_param:   "env",
                 base_path:    deployments_path,
-                extra_params: { "period" => params[:period].presence || "last_month" }
+                extra_params: { "period" => params[:period].presence || "last_month" },
+                turbo_frame:  "deployments-table"
               ) %>
               <%= render Dashboard::FilterPillComponent.new(
                 options:      @presenter.period_options,
                 selected:     @presenter.selected_period_label,
                 link_param:   "period",
                 base_path:    deployments_path,
-                extra_params: { "env" => params[:env].presence || "all" }
+                extra_params: { "env" => params[:env].presence || "all" },
+                turbo_frame:  "deployments-table"
               ) %>
             </div>
           </div>
