@@ -1,7 +1,6 @@
 class DeploymentsController < ApplicationController
   def index
-    @period    = params[:period]
-    @presenter = DeploymentsPresenter.new(period: @period)
+    @presenter = DeploymentsPresenter.new(period: params[:period], env: params[:env])
     @user      = UserPresenter.new
   end
 end

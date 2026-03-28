@@ -6,33 +6,51 @@ class DeploymentsPresenter
     "all_time"     => nil
   }.freeze
 
-  FILTER_OPTIONS = [
+  PERIOD_OPTIONS = [
     { label: "Last Month",   value: "last_month" },
     { label: "Last Week",    value: "last_week" },
     { label: "Last 90 Days", value: "last_90_days" },
     { label: "All Time",     value: "all_time" }
   ].freeze
 
+  ENV_OPTIONS = [
+    { label: "All",        value: "all" },
+    { label: "Production", value: "prod" },
+    { label: "Stage",      value: "stage" },
+    { label: "QA",         value: "qa" }
+  ].freeze
+
+  VALID_ENVS = %w[prod stage qa].freeze
+
   TableRow     = Struct.new(:name, :env, :count, :last_deployed, keyword_init: true)
   ActivityItem = Struct.new(:icon, :icon_color, :message, :timestamp, :actor, keyword_init: true)
 
-  def initialize(period: "last_month")
+  def initialize(period: "last_month", env: "all")
     @period = PERIODS.key?(period) ? period : "last_month"
+    @env    = VALID_ENVS.include?(env) ? env : "all"
   end
 
-  def filter_options
-    FILTER_OPTIONS
+  def period_options
+    PERIOD_OPTIONS
   end
 
-  def selected_label
-    FILTER_OPTIONS.find { |o| o[:value] == @period }&.fetch(:label, "Last Month")
+  def env_options
+    ENV_OPTIONS
+  end
+
+  def selected_period_label
+    PERIOD_OPTIONS.find { |o| o[:value] == @period }&.fetch(:label, "Last Month")
+  end
+
+  def selected_env_label
+    ENV_OPTIONS.find { |o| o[:value] == @env }&.fetch(:label, "All")
   end
 
   def table_rows
-    scoped = period_scope
+    scoped = env_scope(period_scope)
     groups = scoped.includes(:repository).group(:repository_id, :environment)
 
-    counts    = groups.count
+    counts     = groups.count
     last_dates = groups.maximum(:date)
 
     rows = counts.map do |(repo_id, env), count|
@@ -52,22 +70,26 @@ class DeploymentsPresenter
   end
 
   def activity_feed
-    latest_by_repo = Deployment.includes(:repository)
-                               .select("repository_id, MAX(date) AS last_date")
-                               .group(:repository_id)
-                               .map { |d| [ d.repository_id, d.last_date ] }
-                               .to_h
+    # Find the most recent deployment per repo across all environments,
+    # then also retrieve which environment that most recent deployment was in.
+    latest_per_combo = Deployment.includes(:repository)
+                                 .select("repository_id, environment, MAX(date) AS last_date")
+                                 .group(:repository_id, :environment)
+
+    # For each repo, keep only the combo with the latest date
+    latest_by_repo = latest_per_combo.group_by(&:repository_id)
+                                     .transform_values { |records| records.max_by(&:last_date) }
 
     repo_ids = latest_by_repo.keys
     repos    = Repository.where(id: repo_ids).sort_by { |r| r.name.delete_prefix("sul-dlss/") }
 
     repos.map do |repo|
-      last_date = latest_by_repo[repo.id]
+      record = latest_by_repo[repo.id]
       ActivityItem.new(
         icon:       "bi-rocket-takeoff",
         icon_color: "var(--dispatch-purple)",
-        message:    repo.name.delete_prefix("sul-dlss/"),
-        timestamp:  last_date ? time_ago(last_date) : "—",
+        message:    "#{repo.name.delete_prefix("sul-dlss/")} (#{record.environment})",
+        timestamp:  record.last_date ? time_ago(record.last_date) : "—",
         actor:      nil
       )
     end
@@ -82,19 +104,25 @@ class DeploymentsPresenter
     Deployment.where("date >= ?", cutoff_fn.call)
   end
 
+  def env_scope(scope)
+    return scope if @env == "all"
+
+    scope.where(environment: Deployment.environments[@env])
+  end
+
   def repository_cache
     @repository_cache ||= Repository.all.index_by(&:id)
   end
 
   def time_ago(date)
     seconds = (Time.current - date.to_time).round.abs
-    return "#{seconds}s ago"          if seconds < 60
+    return "#{seconds}s ago"               if seconds < 60
     return "#{(seconds / 60).round}m ago"  if seconds < 3600
     return "#{(seconds / 3600).round}h ago" if seconds < 86_400
     days = (seconds / 86_400).round
-    return "#{days}d ago"             if days < 30
+    return "#{days}d ago"                  if days < 30
     months = (days / 30.0).round
-    return "#{months}mo ago"          if months < 12
+    return "#{months}mo ago"               if months < 12
     "#{(months / 12.0).round}y ago"
   end
 end

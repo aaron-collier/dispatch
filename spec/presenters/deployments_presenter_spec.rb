@@ -57,7 +57,48 @@ RSpec.describe DeploymentsPresenter do
       subject(:presenter) { described_class.new(period: "bogus") }
 
       it "defaults to last_month" do
-        expect(presenter.selected_label).to eq("Last Month")
+        expect(presenter.selected_period_label).to eq("Last Month")
+      end
+    end
+
+    context "with env filter" do
+      subject(:presenter) { described_class.new(period: "all_time", env: "prod") }
+
+      before do
+        create(:deployment, repository: repo_a, environment: :prod, date: 1.week.ago)
+        create(:deployment, repository: repo_b, environment: :stage, date: 1.week.ago, revision: "rev_s")
+      end
+
+      it "only returns rows for the specified environment" do
+        envs = presenter.table_rows.map(&:env)
+        expect(envs).to all(eq("prod"))
+      end
+
+      it "excludes rows for other environments" do
+        names = presenter.table_rows.map(&:name)
+        expect(names).not_to include("sul-pub")
+      end
+    end
+
+    context "with env=all (default)" do
+      subject(:presenter) { described_class.new(period: "all_time", env: "all") }
+
+      before do
+        create(:deployment, repository: repo_a, environment: :prod,  date: 1.week.ago)
+        create(:deployment, repository: repo_a, environment: :stage, date: 1.week.ago, revision: "rev_s")
+      end
+
+      it "returns rows for all environments" do
+        envs = presenter.table_rows.map(&:env)
+        expect(envs).to include("prod", "stage")
+      end
+    end
+
+    context "with an unknown env" do
+      subject(:presenter) { described_class.new(env: "bogus") }
+
+      it "defaults to all" do
+        expect(presenter.selected_env_label).to eq("All")
       end
     end
   end
@@ -66,52 +107,84 @@ RSpec.describe DeploymentsPresenter do
     subject(:presenter) { described_class.new }
 
     before do
-      create(:deployment, repository: repo_a, date: 1.hour.ago)
-      create(:deployment, repository: repo_b, date: 2.days.ago)
+      create(:deployment, repository: repo_a, environment: :prod, date: 1.hour.ago)
+      create(:deployment, repository: repo_b, environment: :stage, date: 2.days.ago)
     end
 
-    it "returns activity items for each repository that has deployments" do
-      names = presenter.activity_feed.map(&:message)
-      expect(names).to include("argo")
-      expect(names).to include("sul-pub")
+    it "returns one item per repository" do
+      expect(presenter.activity_feed.length).to eq(2)
+    end
+
+    it "includes the environment in the message" do
+      messages = presenter.activity_feed.map(&:message)
+      expect(messages).to include("argo (prod)")
     end
 
     it "sorts alphabetically by repository name" do
-      names = presenter.activity_feed.map(&:message)
+      messages = presenter.activity_feed.map(&:message)
+      names = messages.map { |m| m.sub(/\s\(.*\)$/, "") }
       expect(names).to eq(names.sort)
     end
 
     it "strips the sul-dlss/ prefix" do
-      names = presenter.activity_feed.map(&:message)
-      expect(names).not_to include("sul-dlss/argo")
+      messages = presenter.activity_feed.map(&:message)
+      expect(messages).not_to include(a_string_starting_with("sul-dlss/"))
+    end
+
+    it "shows the environment of the most recent deployment when a repo has multiple" do
+      create(:deployment, repository: repo_a, environment: :stage, date: 30.minutes.ago, revision: "newer")
+      item = presenter.activity_feed.find { |a| a.message.start_with?("argo") }
+      expect(item.message).to eq("argo (stage)")
     end
 
     it "returns ActivityItem structs with the expected icon" do
-      item = presenter.activity_feed.first
-      expect(item.icon).to eq("bi-rocket-takeoff")
+      expect(presenter.activity_feed.first.icon).to eq("bi-rocket-takeoff")
     end
   end
 
-  describe "#filter_options" do
+  describe "#period_options" do
     subject(:presenter) { described_class.new }
 
-    it "returns four filter options" do
-      expect(presenter.filter_options.length).to eq(4)
+    it "returns four period options" do
+      expect(presenter.period_options.length).to eq(4)
     end
 
     it "includes Last Month, Last Week, Last 90 Days, and All Time" do
-      labels = presenter.filter_options.map { |o| o[:label] }
+      labels = presenter.period_options.map { |o| o[:label] }
       expect(labels).to contain_exactly("Last Month", "Last Week", "Last 90 Days", "All Time")
     end
   end
 
-  describe "#selected_label" do
+  describe "#env_options" do
+    subject(:presenter) { described_class.new }
+
+    it "returns four env options" do
+      expect(presenter.env_options.length).to eq(4)
+    end
+
+    it "includes All, Production, Stage, and QA" do
+      labels = presenter.env_options.map { |o| o[:label] }
+      expect(labels).to contain_exactly("All", "Production", "Stage", "QA")
+    end
+  end
+
+  describe "#selected_period_label" do
     it "returns Last Month by default" do
-      expect(described_class.new.selected_label).to eq("Last Month")
+      expect(described_class.new.selected_period_label).to eq("Last Month")
     end
 
     it "returns the matching label for a valid period" do
-      expect(described_class.new(period: "last_week").selected_label).to eq("Last Week")
+      expect(described_class.new(period: "last_week").selected_period_label).to eq("Last Week")
+    end
+  end
+
+  describe "#selected_env_label" do
+    it "returns All by default" do
+      expect(described_class.new.selected_env_label).to eq("All")
+    end
+
+    it "returns Production for prod" do
+      expect(described_class.new(env: "prod").selected_env_label).to eq("Production")
     end
   end
 

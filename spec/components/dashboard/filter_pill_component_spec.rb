@@ -53,7 +53,24 @@ RSpec.describe Dashboard::FilterPillComponent, type: :component do
 
     it "generates hrefs with the query param" do
       render_inline(component)
-      expect(page).to have_css("a[href='/deployments?period=last_week']")
+      expect(page).to have_css("a[href*='period=last_week']")
+    end
+
+    context "with extra_params" do
+      subject(:component) do
+        described_class.new(
+          options:      options,
+          selected:     "Last Month",
+          link_param:   "period",
+          base_path:    "/deployments",
+          extra_params: { "env" => "prod" }
+        )
+      end
+
+      it "includes extra params in every href" do
+        render_inline(component)
+        expect(page).to have_css("a[href*='env=prod']")
+      end
     end
 
     it "still renders the dropdown toggle button" do
