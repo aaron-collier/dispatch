@@ -24,7 +24,7 @@ class HoneybadgerService
     return repository.project_id if repository.project_id.present?
 
     projects = get("projects").fetch("results", [])
-    project  = projects.find { |p| p["name"] == repository.name }
+    project  = projects.find { |p| p["name"] == repository.name.delete_prefix("sul-dlss/") }
     return nil unless project
 
     repository.update!(project_id: project["id"])
