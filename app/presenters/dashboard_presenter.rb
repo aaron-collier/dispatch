@@ -1,6 +1,6 @@
 class DashboardPresenter
-  StatCard   = Struct.new(:label, :value, :delta, :delta_direction, :sparkline_data, keyword_init: true)
-  FlakeyTest = Struct.new(:name, :suite, :fail_rate, :last_seen, keyword_init: true)
+  StatCard          = Struct.new(:label, :value, :delta, :delta_direction, :sparkline_data, keyword_init: true)
+  IntegrationTestRow = Struct.new(:name, :status, :fail_rate, :last_run, keyword_init: true)
   Activity   = Struct.new(:icon, :icon_color, :message, :timestamp, :actor, keyword_init: true)
   ChartPoint = Struct.new(:label, :value, keyword_init: true)
   DonutSlice = Struct.new(:label, :value, :color, keyword_init: true)
@@ -38,13 +38,16 @@ class DashboardPresenter
     ]
   end
 
-  def flaky_tests
-    [
-      FlakeyTest.new(name: "UserAuthFlow#login_with_sso",  suite: "auth",         fail_rate: 38, last_seen: "2h ago"),
-      FlakeyTest.new(name: "PaymentController#charge",     suite: "payments",     fail_rate: 24, last_seen: "4h ago"),
-      FlakeyTest.new(name: "RepoSync#webhook_delivery",    suite: "integrations", fail_rate: 17, last_seen: "6h ago"),
-      FlakeyTest.new(name: "DashboardController#index",    suite: "controllers",  fail_rate: 9,  last_seen: "1d ago")
-    ]
+  def integration_tests
+    IntegrationTest.order(:name).map do |t|
+      last_run = t.test_runs.order(created_at: :desc).first
+      IntegrationTestRow.new(
+        name:      t.name,
+        status:    last_run&.status,
+        fail_rate: nil,
+        last_run:  nil
+      )
+    end
   end
 
   def activity_feed
