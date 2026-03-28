@@ -27,4 +27,38 @@ RSpec.describe Dashboard::FilterPillComponent, type: :component do
       expect(page).to have_css("button.dispatch-filter-pill", text: /Week/)
     end
   end
+
+  context "in link mode (link_param and base_path provided)" do
+    let(:options) do
+      [
+        { label: "Last Month", value: "last_month" },
+        { label: "Last Week",  value: "last_week" }
+      ]
+    end
+
+    subject(:component) do
+      described_class.new(
+        options:    options,
+        selected:   "Last Month",
+        link_param: "period",
+        base_path:  "/deployments"
+      )
+    end
+
+    it "renders anchor tags instead of buttons for options" do
+      render_inline(component)
+      expect(page).to have_css("a", text: "Last Month")
+      expect(page).to have_css("a", text: "Last Week")
+    end
+
+    it "generates hrefs with the query param" do
+      render_inline(component)
+      expect(page).to have_css("a[href='/deployments?period=last_week']")
+    end
+
+    it "still renders the dropdown toggle button" do
+      render_inline(component)
+      expect(page).to have_css("button.dispatch-filter-pill")
+    end
+  end
 end

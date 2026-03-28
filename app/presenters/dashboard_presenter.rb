@@ -48,13 +48,7 @@ class DashboardPresenter
   end
 
   def activity_feed
-    [
-      Activity.new(icon: "bi-git",            icon_color: "var(--dispatch-success)", message: "PR #481 merged to main",           timestamp: "3m ago",  actor: "aaronc"),
-      Activity.new(icon: "bi-shield-check",   icon_color: "var(--dispatch-info)",    message: "Security scan passed",             timestamp: "12m ago", actor: "ci-bot"),
-      Activity.new(icon: "bi-rocket-takeoff", icon_color: "var(--dispatch-purple)",  message: "Deployed v2.4.1 to production",    timestamp: "1h ago",  actor: "deploy-bot"),
-      Activity.new(icon: "bi-bug",            icon_color: "var(--dispatch-danger)",  message: "Regression detected in auth flow", timestamp: "2h ago",  actor: "sentinel"),
-      Activity.new(icon: "bi-arrow-repeat",   icon_color: "var(--dispatch-warning)", message: "Auto-refactor PR #483 opened",     timestamp: "3h ago",  actor: "refactor-bot")
-    ]
+    DeploymentsPresenter.new.activity_feed
   end
 
   def line_chart_data
