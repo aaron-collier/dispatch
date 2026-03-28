@@ -8,7 +8,7 @@
       <li>
         <% if link_mode? %>
           <%= link_to option_label(option), option_href(option),
-                data: { turbo_frame: "deployments-table" },
+                data: ({ turbo_frame: turbo_frame } if turbo_frame),
                 class: "dropdown-item",
                 style: "color: var(--dispatch-text-secondary); font-size: 0.8125rem;" %>
         <% else %>

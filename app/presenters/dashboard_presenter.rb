@@ -25,19 +25,6 @@ class DashboardPresenter
     ]
   end
 
-  def health_score
-    { score: 94, label: "Excellent" }
-  end
-
-  def health_segments
-    [
-      { label: "Passing", value: 847, color: "var(--dispatch-success)" },
-      { label: "Flaky",   value: 43,  color: "var(--dispatch-warning)" },
-      { label: "Failing", value: 12,  color: "var(--dispatch-danger)"  },
-      { label: "Skipped", value: 22,  color: "var(--dispatch-text-muted)" }
-    ]
-  end
-
   def integration_tests
     IntegrationTest.order(:name).map do |t|
       last_run = t.test_runs.order(created_at: :desc).first
