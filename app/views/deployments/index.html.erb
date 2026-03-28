@@ -39,12 +39,22 @@
         <div class="dispatch-card h-100">
           <div class="dispatch-card__header">
             <span class="dispatch-label">Overview</span>
-            <%= render Dashboard::FilterPillComponent.new(
-              options:    @presenter.filter_options,
-              selected:   @presenter.selected_label,
-              link_param: "period",
-              base_path:  deployments_path
-            ) %>
+            <div class="d-flex gap-2">
+              <%= render Dashboard::FilterPillComponent.new(
+                options:      @presenter.env_options,
+                selected:     @presenter.selected_env_label,
+                link_param:   "env",
+                base_path:    deployments_path,
+                extra_params: { "period" => params[:period].presence || "last_month" }
+              ) %>
+              <%= render Dashboard::FilterPillComponent.new(
+                options:      @presenter.period_options,
+                selected:     @presenter.selected_period_label,
+                link_param:   "period",
+                base_path:    deployments_path,
+                extra_params: { "env" => params[:env].presence || "all" }
+              ) %>
+            </div>
           </div>
           <div class="dispatch-card__body">
             <%= turbo_frame_tag "deployments-table" do %>

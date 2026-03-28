@@ -2,14 +2,16 @@ module Dashboard
   class FilterPillComponent < ViewComponent::Base
     # options: Array of Strings OR Array of {label:, value:} hashes
     # link_param / base_path: when set, render <a> tags for query-param navigation
-    def initialize(options:, selected: nil, link_param: nil, base_path: nil)
-      @options    = options
-      @link_param = link_param
-      @base_path  = base_path
-      @selected   = selected || label_for(options.first)
+    # extra_params: Hash of additional query params to include in every link href
+    def initialize(options:, selected: nil, link_param: nil, base_path: nil, extra_params: {})
+      @options      = options
+      @link_param   = link_param
+      @base_path    = base_path
+      @extra_params = extra_params
+      @selected     = selected || label_for(options.first)
     end
 
-    attr_reader :options, :selected, :link_param, :base_path
+    attr_reader :options, :selected, :link_param, :base_path, :extra_params
 
     def link_mode?
       link_param.present?
@@ -24,7 +26,8 @@ module Dashboard
     end
 
     def option_href(option)
-      "#{base_path}?#{link_param}=#{option_value(option)}"
+      query = extra_params.merge(link_param => option_value(option))
+      "#{base_path}?#{URI.encode_www_form(query)}"
     end
 
     private
