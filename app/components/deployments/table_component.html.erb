@@ -1,0 +1,28 @@
+<% if rows.any? %>
+  <table class="dispatch-table w-100">
+    <thead>
+      <tr>
+        <th class="dispatch-table__header">Repository</th>
+        <th class="dispatch-table__header">Env</th>
+        <th class="dispatch-table__header">Deployments</th>
+        <th class="dispatch-table__header">Last</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% rows.each do |row| %>
+        <tr class="dispatch-table__row">
+          <td class="dispatch-table__cell dispatch-table__cell--primary"><%= row.name %></td>
+          <td class="dispatch-table__cell">
+            <span class="dispatch-env-badge dispatch-env-badge--<%= row.env %>"><%= row.env %></span>
+          </td>
+          <td class="dispatch-table__cell"><%= row.count %></td>
+          <td class="dispatch-table__cell dispatch-table__cell--muted"><%= row.last_deployed %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-center py-4" style="color: var(--dispatch-text-muted); font-size: 0.875rem;">
+    No deployments found for this period.
+  </p>
+<% end %>

@@ -4,41 +4,46 @@ module Dashboard
       {
         label: "Overview",
         items: [
-          { label: "Dashboard",    icon: "bi-grid-1x2",        path: "/",             active: true },
-          { label: "Deployments",  icon: "bi-rocket-takeoff",  path: "/deployments",  active: false },
-          { label: "Environments", icon: "bi-layers",          path: "/environments", active: false }
+          { label: "Dashboard",    icon: "bi-grid-1x2",        path: "/" },
+          { label: "Deployments",  icon: "bi-rocket-takeoff",  path: "/deployments" },
+          { label: "Environments", icon: "bi-layers",          path: "/environments" }
         ]
       },
       {
         label: "Testing",
         items: [
-          { label: "Test Suites", icon: "bi-check2-circle", path: "/test-suites", active: false },
-          { label: "Flaky Tests", icon: "bi-bug",           path: "/flaky-tests", active: false }
+          { label: "Test Suites", icon: "bi-check2-circle", path: "/test-suites" },
+          { label: "Flaky Tests", icon: "bi-bug",           path: "/flaky-tests" }
         ]
       },
       {
         label: "Dependencies",
         items: [
-          { label: "PR Monitor", icon: "bi-git",          path: "/pr-monitor", active: false },
-          { label: "Updates",    icon: "bi-arrow-repeat", path: "/updates",    active: false }
+          { label: "PR Monitor", icon: "bi-git",          path: "/pr-monitor" },
+          { label: "Updates",    icon: "bi-arrow-repeat", path: "/updates" }
         ]
       },
       {
         label: "Settings",
         items: [
-          { label: "Settings", icon: "bi-gear", path: "/settings", active: false }
+          { label: "Settings", icon: "bi-gear", path: "/settings" }
         ]
       }
     ].freeze
 
-    def initialize(user: UserPresenter.new)
+    def initialize(user: UserPresenter.new, active_path: "/")
       @user = user
+      @active_path = active_path
     end
 
     attr_reader :user
 
     def nav_sections
-      NAV_SECTIONS
+      NAV_SECTIONS.map do |section|
+        section.merge(
+          items: section[:items].map { |item| item.merge(active: item[:path] == @active_path) }
+        )
+      end
     end
   end
 end

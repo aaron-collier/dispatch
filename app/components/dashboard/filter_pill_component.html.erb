@@ -6,8 +6,15 @@
   <ul class="dropdown-menu dropdown-menu-end" style="background-color: var(--dispatch-card-bg-elevated); border-color: var(--dispatch-card-border);">
     <% options.each do |option| %>
       <li>
-        <button class="dropdown-item" style="color: var(--dispatch-text-secondary); font-size: 0.8125rem;"
-                type="button"><%= option %></button>
+        <% if link_mode? %>
+          <%= link_to option_label(option), option_href(option),
+                data: { turbo_frame: "deployments-table" },
+                class: "dropdown-item",
+                style: "color: var(--dispatch-text-secondary); font-size: 0.8125rem;" %>
+        <% else %>
+          <button class="dropdown-item" style="color: var(--dispatch-text-secondary); font-size: 0.8125rem;"
+                  type="button"><%= option_label(option) %></button>
+        <% end %>
       </li>
     <% end %>
   </ul>

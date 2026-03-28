@@ -15,7 +15,7 @@
        tabindex="-1"
        aria-labelledby="sidebar-drawer-label">
     <div class="offcanvas-body p-0">
-      <%= render Dashboard::SidebarComponent.new(user: @user) %>
+      <%= render Dashboard::SidebarComponent.new(user: @user, active_path: "/") %>
     </div>
   </div>
 </div>

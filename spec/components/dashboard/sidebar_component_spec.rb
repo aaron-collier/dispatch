@@ -34,9 +34,23 @@ RSpec.describe Dashboard::SidebarComponent, type: :component do
     expect(page).to have_text("Test Suites")
   end
 
-  it "marks Dashboard as the active nav item" do
+  it "marks Dashboard as the active nav item by default" do
     render_inline(component)
     expect(page).to have_css("a.dispatch-sidebar__nav-link.active", text: /Dashboard/)
+  end
+
+  context "when active_path is /deployments" do
+    subject(:component) { described_class.new(user: user, active_path: "/deployments") }
+
+    it "marks Deployments as active" do
+      render_inline(component)
+      expect(page).to have_css("a.dispatch-sidebar__nav-link.active", text: /Deployments/)
+    end
+
+    it "does not mark Dashboard as active" do
+      render_inline(component)
+      expect(page).not_to have_css("a.dispatch-sidebar__nav-link.active", text: /Dashboard/)
+    end
   end
 
   it "renders the theme toggle" do

@@ -24,7 +24,7 @@ RSpec.describe HoneybadgerService do
   end
 
   let(:projects_payload) do
-    { "results" => [ { "id" => "proj_abc", "name" => "sul-dlss/argo" } ] }
+    { "results" => [ { "id" => "proj_abc", "name" => "argo" } ] }
   end
 
   describe "#faults_for_repo" do

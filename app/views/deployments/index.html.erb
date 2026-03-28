@@ -1,0 +1,67 @@
+<%# Mobile header — hamburger, visible < 768px only %>
+<div class="dispatch-mobile-header" data-controller="sidebar">
+  <button class="btn btn-link p-0 text-decoration-none"
+          data-action="click->sidebar#open"
+          aria-label="Open navigation">
+    <i class="bi bi-list" style="font-size: 1.25rem; color: var(--dispatch-text-primary);"></i>
+  </button>
+  <span class="ms-3 fw-semibold" style="color: var(--dispatch-text-primary); font-size: 0.9375rem;">Dispatch</span>
+
+  <%# Bootstrap Offcanvas drawer for mobile %>
+  <div class="offcanvas offcanvas-start"
+       id="sidebar-drawer"
+       data-sidebar-target="drawer"
+       style="width: 220px; background-color: var(--dispatch-sidebar-bg); border-right: 1px solid var(--dispatch-card-border);"
+       tabindex="-1"
+       aria-labelledby="sidebar-drawer-label">
+    <div class="offcanvas-body p-0">
+      <%= render Dashboard::SidebarComponent.new(user: @user, active_path: "/deployments") %>
+    </div>
+  </div>
+</div>
+
+<%# Main layout wrapper %>
+<div class="dispatch-root">
+  <%# Desktop / tablet sidebar %>
+  <%= render Dashboard::SidebarComponent.new(user: @user, active_path: "/deployments") %>
+
+  <%# Scrollable content area %>
+  <main class="dispatch-content">
+
+    <%# ── Page header ─────────────────────────────────── %>
+    <div class="mb-4">
+      <h1 class="dispatch-page-title">Deployments</h1>
+    </div>
+
+    <%# ── Row: Overview | Activity ───────────────────── %>
+    <div class="row g-3">
+      <div class="col-12 col-lg-8">
+        <div class="dispatch-card h-100">
+          <div class="dispatch-card__header">
+            <span class="dispatch-label">Overview</span>
+            <%= render Dashboard::FilterPillComponent.new(
+              options:    @presenter.filter_options,
+              selected:   @presenter.selected_label,
+              link_param: "period",
+              base_path:  deployments_path
+            ) %>
+          </div>
+          <div class="dispatch-card__body">
+            <%= turbo_frame_tag "deployments-table" do %>
+              <%= render Deployments::TableComponent.new(rows: @presenter.table_rows) %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <%= render Dashboard::PanelCardComponent.new(title: "Recent Activity") do |c| %>
+          <% c.with_body do %>
+            <%= render Dashboard::ActivityFeedComponent.new(activities: @presenter.activity_feed) %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+  </main>
+</div>
