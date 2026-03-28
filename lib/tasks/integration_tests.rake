@@ -20,7 +20,7 @@ namespace :integration_tests do
         content = Base64.decode64(raw.content)
 
         puts "  Generating description for #{name}…"
-        response = RubyLLM.chat(model: "claude-sonnet-4-6").ask(
+        response = RubyLLM.chat(model: "gpt-4o").ask(
           "In 1-2 sentences, describe what this Ruby integration test file verifies. " \
           "Be specific about what feature or workflow it tests. " \
           "Reply with only the description, no preamble.\n\n#{content}"
