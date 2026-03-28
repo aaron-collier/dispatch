@@ -115,9 +115,9 @@ RSpec.describe DeploymentsPresenter do
       expect(presenter.activity_feed.length).to eq(2)
     end
 
-    it "includes the environment in the message" do
+    it "includes the environment and user in the message" do
       messages = presenter.activity_feed.map(&:message)
-      expect(messages).to include("argo (prod)")
+      expect(messages).to include(a_string_matching(/\Aargo \(prod, \w+\)\z/))
     end
 
     it "sorts alphabetically by repository name" do
@@ -131,10 +131,11 @@ RSpec.describe DeploymentsPresenter do
       expect(messages).not_to include(a_string_starting_with("sul-dlss/"))
     end
 
-    it "shows the environment of the most recent deployment when a repo has multiple" do
-      create(:deployment, repository: repo_a, environment: :stage, date: 30.minutes.ago, revision: "newer")
+    it "shows the env and user of the most recent deployment when a repo has multiple" do
+      create(:deployment, repository: repo_a, environment: :stage, date: 30.minutes.ago,
+                          revision: "newer", user: "deploy-bot")
       item = presenter.activity_feed.find { |a| a.message.start_with?("argo") }
-      expect(item.message).to eq("argo (stage)")
+      expect(item.message).to eq("argo (stage, deploy-bot)")
     end
 
     it "returns ActivityItem structs with the expected icon" do

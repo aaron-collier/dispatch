@@ -70,26 +70,22 @@ class DeploymentsPresenter
   end
 
   def activity_feed
-    # Find the most recent deployment per repo across all environments,
-    # then also retrieve which environment that most recent deployment was in.
-    latest_per_combo = Deployment.includes(:repository)
-                                 .select("repository_id, environment, MAX(date) AS last_date")
-                                 .group(:repository_id, :environment)
-
-    # For each repo, keep only the combo with the latest date
-    latest_by_repo = latest_per_combo.group_by(&:repository_id)
-                                     .transform_values { |records| records.max_by(&:last_date) }
+    # Load full records (need user column) sorted by date desc, then keep
+    # only the most recent deployment per repository across all environments.
+    latest_by_repo = Deployment.order(date: :desc)
+                               .group_by(&:repository_id)
+                               .transform_values(&:first)
 
     repo_ids = latest_by_repo.keys
     repos    = Repository.where(id: repo_ids).sort_by { |r| r.name.delete_prefix("sul-dlss/") }
 
     repos.map do |repo|
-      record = latest_by_repo[repo.id]
+      d = latest_by_repo[repo.id]
       ActivityItem.new(
         icon:       "bi-rocket-takeoff",
         icon_color: "var(--dispatch-purple)",
-        message:    "#{repo.name.delete_prefix("sul-dlss/")} (#{record.environment})",
-        timestamp:  record.last_date ? time_ago(record.last_date) : "—",
+        message:    "#{repo.name.delete_prefix("sul-dlss/")} (#{d.environment}, #{d.user})",
+        timestamp:  d.date ? time_ago(d.date) : "—",
         actor:      nil
       )
     end
