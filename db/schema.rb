@@ -10,7 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_230807) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_28_031013) do
+  create_table "deployments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "date", null: false
+    t.integer "environment", null: false
+    t.integer "repository_id", null: false
+    t.string "revision", null: false
+    t.datetime "updated_at", null: false
+    t.string "user", null: false
+    t.index ["repository_id", "revision", "environment"], name: "index_deployments_on_repo_revision_env", unique: true
+    t.index ["repository_id"], name: "index_deployments_on_repository_id"
+  end
+
+  create_table "faults", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "date", null: false
+    t.integer "environment", null: false
+    t.string "honeybadger_id", null: false
+    t.integer "repository_id", null: false
+    t.string "revision", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["honeybadger_id"], name: "index_faults_on_honeybadger_id", unique: true
+    t.index ["repository_id"], name: "index_faults_on_repository_id"
+  end
+
   create_table "repositories", force: :cascade do |t|
     t.boolean "cocina_models_update", default: false, null: false
     t.datetime "created_at", null: false
@@ -18,6 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_230807) do
     t.date "last_updated"
     t.string "name", null: false
     t.text "non_standard_envs"
+    t.string "project_id"
     t.boolean "skip_audit", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_repositories_on_name", unique: true
@@ -42,5 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_230807) do
     t.index ["repository_id"], name: "index_update_pull_requests_on_repository_id"
   end
 
+  add_foreign_key "deployments", "repositories"
+  add_foreign_key "faults", "repositories"
   add_foreign_key "update_pull_requests", "repositories"
 end

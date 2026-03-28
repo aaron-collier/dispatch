@@ -3,6 +3,8 @@ class Repository < ApplicationRecord
   serialize :non_standard_envs, coder: JSON
 
   has_many :update_pull_requests, dependent: :destroy
+  has_many :deployments,          dependent: :destroy
+  has_many :faults,               dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
 
