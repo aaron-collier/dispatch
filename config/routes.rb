@@ -11,4 +11,6 @@ Rails.application.routes.draw do
 
   root "dashboard#index"
   resources :deployments, only: [ :index ]
+  resource :auth, controller: "auth", only: [ :new, :create ]
+  get "/auth/callback", to: "auth#callback", as: :callback_auth
 end
