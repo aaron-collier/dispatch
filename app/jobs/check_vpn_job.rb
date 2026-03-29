@@ -13,11 +13,10 @@ class CheckVpnJob < ApplicationJob
   private
 
   def vpn_connected?
-    # On macOS, VPN clients (Cisco AnyConnect, GlobalProtect, WireGuard, etc.)
-    # create utun* network interfaces. Presence of any utun interface indicates
-    # an active VPN connection.
-    interfaces = `ifconfig 2>/dev/null`
-    interfaces.match?(/^utun\d+:/m)
+    # scutil --nc list reports all configured VPN connections and their status.
+    # Unlike checking for utun interfaces (which macOS always creates), this
+    # correctly returns "(Connected)" only when a VPN session is actually active.
+    `scutil --nc list 2>/dev/null`.include?("(Connected)")
   end
 
   def broadcast_status(connected)

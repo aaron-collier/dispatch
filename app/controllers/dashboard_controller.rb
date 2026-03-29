@@ -4,9 +4,8 @@ class DashboardController < ApplicationController
     @stats     = TestRunStatsPresenter.new(period: params[:stability_period])
     @user = UserPresenter.new
     @system_statuses = SystemStatus.all.index_by(&:name)
-    CheckVpnJob.perform_later unless @system_statuses.key?("vpn")
-    CheckControlMasterJob.perform_later unless @system_statuses.key?("control_master")
-    CheckAuthJob.perform_later if @system_statuses["auth"]&.expired?
+    CheckVpnJob.perform_later
+    CheckControlMasterJob.perform_later
     RefreshRepositoriesJob.perform_later if Repository.none?
 
     @dependency_card = {

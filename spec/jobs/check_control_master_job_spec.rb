@@ -9,6 +9,7 @@ RSpec.describe CheckControlMasterJob, type: :job do
 
     context "when a control master session is open" do
       before do
+        allow(Settings).to receive(:control_master_host).and_return("deploy.example.com")
         allow_any_instance_of(described_class).to receive(:system).and_return(true)
       end
 
