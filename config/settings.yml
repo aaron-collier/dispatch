@@ -13,6 +13,10 @@ vpn_host: ~
 repository_source: https://raw.githubusercontent.com/sul-dlss/sdr-deploy/main/config/settings.yml
 update_branch: update-dependencies
 
+auth:
+  url: ~
+  ttl_hours: 8
+
 honeybadger_api:
   url: https://app.honeybadger.io/v2
   max_faults: 10

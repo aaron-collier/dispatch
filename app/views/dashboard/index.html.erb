@@ -43,6 +43,9 @@
         label:     "Control Master",
         connected: @system_statuses["control_master"]&.connected || false
       ) %>
+      <%= render Dashboard::AuthIndicatorComponent.new(
+        authenticated: @system_statuses["auth"]&.active? || false
+      ) %>
     </div>
 
     <%# ── Row 1: Stat cards (3-up) ───────────────────────── %>
