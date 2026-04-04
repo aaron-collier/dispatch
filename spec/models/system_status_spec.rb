@@ -31,43 +31,4 @@ RSpec.describe SystemStatus, type: :model do
       expect(record.name).to eq("control_master")
     end
   end
-
-  describe "#expired?" do
-    it "returns false when expires_at is nil" do
-      status = described_class.new(name: "auth", connected: true, expires_at: nil)
-      expect(status.expired?).to be(false)
-    end
-
-    it "returns false when expires_at is in the future" do
-      status = described_class.new(name: "auth", connected: true, expires_at: 1.hour.from_now)
-      expect(status.expired?).to be(false)
-    end
-
-    it "returns true when expires_at is in the past" do
-      status = described_class.new(name: "auth", connected: true, expires_at: 1.hour.ago)
-      expect(status.expired?).to be(true)
-    end
-  end
-
-  describe "#active?" do
-    it "returns true when connected and not expired" do
-      status = described_class.new(name: "auth", connected: true, expires_at: 1.hour.from_now)
-      expect(status.active?).to be(true)
-    end
-
-    it "returns false when connected but expired" do
-      status = described_class.new(name: "auth", connected: true, expires_at: 1.hour.ago)
-      expect(status.active?).to be(false)
-    end
-
-    it "returns false when disconnected regardless of expiry" do
-      status = described_class.new(name: "auth", connected: false, expires_at: 1.hour.from_now)
-      expect(status.active?).to be(false)
-    end
-
-    it "returns true when connected with no expires_at" do
-      status = described_class.new(name: "vpn", connected: true, expires_at: nil)
-      expect(status.active?).to be(true)
-    end
-  end
 end

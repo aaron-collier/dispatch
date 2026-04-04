@@ -18,10 +18,6 @@ default: &default
     class: CheckControlMasterJob
     queue: default
     schedule: every minute
-  check_auth:
-    class: CheckAuthJob
-    queue: default
-    schedule: every minute
   refresh_repositories:
     class: RefreshRepositoriesJob
     queue: default
