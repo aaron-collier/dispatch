@@ -1,3 +1,0 @@
-auth:
-  url: "https://auth.example.com/login"
-  ttl_hours: 8
