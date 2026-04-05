@@ -5,7 +5,6 @@ class DashboardController < ApplicationController
     @user = UserPresenter.new
     @system_statuses = SystemStatus.all.index_by(&:name)
     CheckVpnJob.perform_later unless @system_statuses.key?("vpn")
-    CheckControlMasterJob.perform_later unless @system_statuses.key?("control_master")
     RefreshRepositoriesJob.perform_later if Repository.none?
 
     @dependency_card = {

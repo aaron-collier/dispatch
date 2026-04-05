@@ -39,9 +39,12 @@
         connected: @system_statuses["vpn"]&.connected || false
       ) %>
       <%= render Dashboard::SystemIndicatorComponent.new(
-        key:       "control_master",
-        label:     "Control Master",
-        connected: @system_statuses["control_master"]&.connected || false
+        key:            "control_master",
+        label:          "Control Master",
+        connected:      @system_statuses["control_master"]&.connected || false,
+        status:         @system_statuses["control_master"]&.status || "disconnected",
+        connect_path:   connect_control_master_path,
+        disconnect_path: disconnect_control_master_path
       ) %>
     </div>
 

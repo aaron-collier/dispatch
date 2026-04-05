@@ -11,6 +11,11 @@ Rails.application.routes.draw do
 
   mount MissionControl::Jobs::Engine, at: "/jobs"
 
+  scope "/control_master", controller: :control_master do
+    post :connect, as: :connect_control_master
+    post :disconnect, as: :disconnect_control_master
+  end
+
   root "dashboard#index"
   resources :deployments, only: [ :index ]
 end

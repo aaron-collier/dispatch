@@ -1,5 +1,19 @@
 <div id="<%= key %>_indicator" class="dispatch-system-indicator">
   <span class="dispatch-system-indicator__dot" style="background-color: <%= status_color %>;"></span>
   <span class="dispatch-system-indicator__label"><%= label %></span>
-  <span class="dispatch-system-indicator__status" style="color: <%= status_color %>;"><%= status_text %></span>
+  <% if connect_path && resolved_status == "disconnected" %>
+    <%= link_to status_text, connect_path,
+          data: { turbo_method: :post },
+          class: "dispatch-system-indicator__status",
+          style: "color: #{status_color}; text-decoration: none;",
+          title: "Click to connect control master" %>
+  <% elsif disconnect_path && resolved_status == "connected" %>
+    <%= link_to status_text, disconnect_path,
+          data: { turbo_method: :post },
+          class: "dispatch-system-indicator__status",
+          style: "color: #{status_color}; text-decoration: none;",
+          title: "Click to disconnect control master" %>
+  <% else %>
+    <span class="dispatch-system-indicator__status" style="color: <%= status_color %>;"><%= status_text %></span>
+  <% end %>
 </div>

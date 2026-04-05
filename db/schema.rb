@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_28_235622) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_04_184829) do
   create_table "deployments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "date", null: false
@@ -62,6 +62,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_28_235622) do
     t.datetime "created_at", null: false
     t.datetime "expires_at"
     t.string "name", null: false
+    t.string "status"
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_system_statuses_on_name", unique: true
   end
