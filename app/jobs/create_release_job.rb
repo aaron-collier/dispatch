@@ -6,7 +6,7 @@ class CreateReleaseJob < ApplicationJob
   def perform(repository_id)
     repo = Repository.find(repository_id)
     tag = "rel-#{Date.current.strftime('%Y-%m-%d')}"
-    message = "created by #{Settings.name} using dispatch"
+    message = "created by sdr-deploy"
     octokit_client.create_release(repo.name, tag, name: tag, body: message)
     repo.update!(release_tag: tag)
     broadcast_card

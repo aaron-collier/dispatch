@@ -1,0 +1,34 @@
+<% status_color = { "queuing" => "var(--dispatch-text-muted)", "running" => "var(--dispatch-info)",
+                    "passed"  => "var(--dispatch-success)",   "failed"  => "var(--dispatch-danger)" }
+                  .fetch(test_run.status.to_s, "var(--dispatch-text-muted)") %>
+<tbody id="test_run_<%= test_run.id %>">
+  <tr>
+    <td>
+      <% if test_run.output.present? %>
+        <a data-bs-toggle="collapse"
+           href="#test_run_output_<%= test_run.id %>"
+           aria-expanded="false"
+           style="font-size: 0.8125rem; font-family: monospace; text-decoration: none; color: inherit; cursor: pointer;">
+          <%= test_run.created_at.strftime("%Y-%m-%d %H:%M") %>
+          <i class="bi bi-chevron-<%= local_assigns[:auto_expand] ? 'up' : 'down' %> ms-1" style="font-size: 0.625rem;"></i>
+        </a>
+      <% else %>
+        <span style="font-size: 0.8125rem; font-family: monospace;"><%= test_run.created_at.strftime("%Y-%m-%d %H:%M") %></span>
+      <% end %>
+    </td>
+    <td>
+      <span class="badge" style="background-color: var(--dispatch-card-bg-elevated); color: <%= status_color %>; font-size: 0.6875rem; font-weight: 400;">
+        <%= test_run.status %>
+      </span>
+    </td>
+  </tr>
+  <% if test_run.output.present? %>
+    <tr>
+      <td colspan="2" class="p-0">
+        <div class="collapse<%= ' show' if local_assigns[:auto_expand] && test_run.output.present? %>" id="test_run_output_<%= test_run.id %>">
+          <pre style="font-size: 0.75rem; background-color: var(--dispatch-card-bg-elevated); border-radius: 4px; padding: 0.75rem; margin: 0.25rem 0 0.5rem; white-space: pre-wrap; word-break: break-word; color: var(--dispatch-text-primary);"><%= test_run.output %></pre>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+</tbody>

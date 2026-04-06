@@ -5,6 +5,7 @@ github_auth_token: ~
 openai_api_key: ~
 
 sunetid: testuser
+sunet_password: ~ # set in settings.local.yml
 name: Test User
 
 control_master_host: ~

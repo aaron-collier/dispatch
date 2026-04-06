@@ -30,7 +30,7 @@ RSpec.describe CreateReleaseJob, type: :job do
       expect(client).to have_received(:create_release).with(
         anything,
         anything,
-        hash_including(body: "created by Aaron Collier using dispatch")
+        hash_including(body: "created by sdr-deploy")
       )
     end
 

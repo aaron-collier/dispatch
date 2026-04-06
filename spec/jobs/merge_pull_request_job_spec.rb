@@ -8,6 +8,7 @@ RSpec.describe MergePullRequestJob, type: :job do
   before do
     pr
     allow(Octokit::Client).to receive(:new).and_return(client)
+    allow(client).to receive(:create_pull_request_review)
     allow(client).to receive(:merge_pull_request)
     allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
     allow(ApplicationController).to receive(:render).and_return("<div></div>")
@@ -62,7 +63,7 @@ RSpec.describe MergePullRequestJob, type: :job do
 
       it "passes the token to Octokit" do
         described_class.perform_now(repo.id, 42)
-        expect(Octokit::Client).to have_received(:new).with(access_token: "token123")
+        expect(Octokit::Client).to have_received(:new).with(access_token: "token123").at_least(:once)
       end
     end
   end

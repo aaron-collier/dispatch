@@ -1,0 +1,71 @@
+<%# Mobile header — hamburger, visible < 768px only %>
+<div class="dispatch-mobile-header" data-controller="sidebar">
+  <button class="btn btn-link p-0 text-decoration-none"
+          data-action="click->sidebar#open"
+          aria-label="Open navigation">
+    <i class="bi bi-list" style="font-size: 1.25rem; color: var(--dispatch-text-primary);"></i>
+  </button>
+  <span class="ms-3 fw-semibold" style="color: var(--dispatch-text-primary); font-size: 0.9375rem;">Dispatch</span>
+
+  <%# Bootstrap Offcanvas drawer for mobile %>
+  <div class="offcanvas offcanvas-start"
+       id="sidebar-drawer"
+       data-sidebar-target="drawer"
+       style="width: 220px; background-color: var(--dispatch-sidebar-bg); border-right: 1px solid var(--dispatch-card-border);"
+       tabindex="-1"
+       aria-labelledby="sidebar-drawer-label">
+    <div class="offcanvas-body p-0">
+      <%= render Dashboard::SidebarComponent.new(user: @user, active_path: "/integration_tests") %>
+    </div>
+  </div>
+</div>
+
+<%# Main layout wrapper %>
+<div class="dispatch-root">
+  <%# Desktop / tablet sidebar %>
+  <%= render Dashboard::SidebarComponent.new(user: @user, active_path: "/integration_tests") %>
+
+  <%# Scrollable content area %>
+  <main class="dispatch-content">
+    <%= turbo_stream_from "integration_tests" %>
+
+    <%# ── Page header ─────────────────────────────────── %>
+    <div class="mb-4 d-flex align-items-center justify-content-between">
+      <h1 class="dispatch-page-title font-mono mb-0"><%= @integration_test.name %></h1>
+      <%= link_to "RUN TEST", run_integration_test_path(@integration_test),
+          data: { turbo_method: :post },
+          style: "font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; color: var(--dispatch-dora-elite); border: 1px solid var(--dispatch-dora-elite); border-radius: 4px; padding: 4px 12px; text-decoration: none;" %>
+    </div>
+
+    <%# ── Test Runs ────────────────────────────────────── %>
+    <div class="dispatch-card">
+      <div class="dispatch-card__header">
+        <span class="dispatch-label">Test Runs</span>
+      </div>
+      <div class="dispatch-card__body">
+        <div style="overflow-x: auto;">
+          <table class="dispatch-table">
+            <thead>
+              <tr>
+                <th style="text-align: left;">Date</th>
+                <th style="text-align: left;">Status</th>
+              </tr>
+            </thead>
+            <% @test_runs.each_with_index do |test_run, i| %>
+              <%= render partial: "integration_tests/test_run_row",
+                         locals: { test_run: test_run, auto_expand: i == 0 } %>
+            <% end %>
+            <% if @test_runs.empty? %>
+              <tbody>
+                <tr>
+                  <td colspan="2" style="text-align: center; color: var(--dispatch-text-muted); padding: 1rem 0;">No test runs yet.</td>
+                </tr>
+              </tbody>
+            <% end %>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>

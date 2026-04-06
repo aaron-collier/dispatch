@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_06_034203) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_06_164536) do
   create_table "deployments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "date", null: false
@@ -49,6 +49,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_034203) do
     t.datetime "created_at", null: false
     t.text "exclude_envs"
     t.date "last_updated"
+    t.boolean "merge_only", default: false, null: false
     t.string "name", null: false
     t.text "non_standard_envs"
     t.string "project_id"
@@ -87,7 +88,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_034203) do
     t.integer "repository_id", null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.index ["pull_request"], name: "index_update_pull_requests_on_pull_request", unique: true
+    t.index ["repository_id", "pull_request"], name: "index_update_pull_requests_on_repository_id_and_pull_request", unique: true
     t.index ["repository_id"], name: "index_update_pull_requests_on_repository_id"
   end
 

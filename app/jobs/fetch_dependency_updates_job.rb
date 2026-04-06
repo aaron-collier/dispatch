@@ -50,8 +50,8 @@ class FetchDependencyUpdatesJob < ApplicationJob
 
     statuses = client.combined_status(repo_name, pr.head.sha)
 
-    return :passing if statuses.state == 'success' || statuses.total_count.zero?
-    return :building if statuses.state == 'pending'
+    return :passing if statuses.state == "success" || statuses.total_count.zero?
+    return :building if statuses.state == "pending"
     # return :building if check_runs.any? { |r| %w[in_progress queued waiting].include?(r.status) }
     # return :failing  if check_runs.any? { |r| %w[failure cancelled timed_out action_required startup_failure].include?(r.conclusion) }
 

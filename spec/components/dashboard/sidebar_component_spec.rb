@@ -31,7 +31,7 @@ RSpec.describe Dashboard::SidebarComponent, type: :component do
     render_inline(component)
     expect(page).to have_text("Dashboard")
     expect(page).to have_text("Deployments")
-    expect(page).to have_text("Test Suites")
+    expect(page).to have_text("Test Suite")
   end
 
   it "marks Dashboard as the active nav item by default" do

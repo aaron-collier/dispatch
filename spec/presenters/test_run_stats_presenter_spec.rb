@@ -124,8 +124,8 @@ RSpec.describe TestRunStatsPresenter do
       expect(presenter.test_rows.first.last_run).to match(/ago/)
     end
 
-    it "classifies flaky tests as flaky" do
-      expect(presenter.test_rows.first.status).to eq("flaky")
+    it "returns the status of the most recent test run" do
+      expect(presenter.test_rows.first.status).to eq("failed")
     end
 
     context "when a test has only passing runs" do
@@ -133,9 +133,9 @@ RSpec.describe TestRunStatsPresenter do
 
       before { create(:test_run, integration_test: passing_test, status: "passed") }
 
-      it "classifies as passing" do
+      it "returns passed status" do
         row = presenter.test_rows.find { |r| r.name == "sul_pub" }
-        expect(row.status).to eq("passing")
+        expect(row.status).to eq("passed")
       end
 
       it "has 0.0 fail_rate" do
@@ -149,9 +149,9 @@ RSpec.describe TestRunStatsPresenter do
 
       before { create(:test_run, integration_test: failing_test, status: "failed") }
 
-      it "classifies as failing" do
+      it "returns failed status" do
         row = presenter.test_rows.find { |r| r.name == "broken_spec" }
-        expect(row.status).to eq("failing")
+        expect(row.status).to eq("failed")
       end
     end
 

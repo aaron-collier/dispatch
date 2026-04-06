@@ -12,7 +12,7 @@ module Dashboard
       {
         label: "Testing",
         items: [
-          { label: "Test Suites", icon: "bi-check2-circle", path: "/test-suites" },
+          { label: "Test Suite", icon: "bi-check2-circle", path: "/integration_tests" },
           { label: "Flaky Tests", icon: "bi-bug",           path: "/flaky-tests" }
         ]
       },

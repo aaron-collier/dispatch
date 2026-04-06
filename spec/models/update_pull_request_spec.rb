@@ -5,7 +5,7 @@ RSpec.describe UpdatePullRequest, type: :model do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:pull_request) }
-    it { is_expected.to validate_uniqueness_of(:pull_request) }
+    it { is_expected.to validate_uniqueness_of(:pull_request).scoped_to(:repository_id) }
   end
 
   describe "associations" do

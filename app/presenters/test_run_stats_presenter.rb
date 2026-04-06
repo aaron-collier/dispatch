@@ -1,5 +1,7 @@
 class TestRunStatsPresenter
   PERIODS = {
+    "all_time"     => nil,
+    "today"        => -> { Date.current.beginning_of_day },
     "last_week"    => -> { 1.week.ago },
     "last_month"   => -> { 1.month.ago },
     "last_90_days" => -> { 90.days.ago }
@@ -11,6 +13,13 @@ class TestRunStatsPresenter
     { label: "Last 90 Days", value: "last_90_days" }
   ].freeze
 
+  INDEX_PERIOD_OPTIONS = [
+    { label: "All Time",   value: "all_time" },
+    { label: "Today",      value: "today" },
+    { label: "Last Week",  value: "last_week" },
+    { label: "Last Month", value: "last_month" }
+  ].freeze
+
   # Per-test summary aggregated over the period.
   # classification: :passing (only passes), :flaky (mixed), :failing (only failures)
   # fail_rate: (failed_count / total_count * 100).round(1)
@@ -19,16 +28,17 @@ class TestRunStatsPresenter
     def fail_rate   = total_count.positive? ? (failed_count.to_f / total_count * 100).round(1) : 0.0
   end
 
-  def initialize(period: "last_month")
-    @period = PERIODS.key?(period) ? period : "last_month"
+  def initialize(period: "last_month", period_option_set: :dashboard)
+    @period_option_set = period_option_set
+    @period = PERIODS.key?(period) ? period : default_period
   end
 
   def period_options
-    PERIOD_OPTIONS
+    @period_option_set == :index ? INDEX_PERIOD_OPTIONS : PERIOD_OPTIONS
   end
 
   def selected_period_label
-    PERIOD_OPTIONS.find { |o| o[:value] == @period }&.fetch(:label, "Last Month")
+    period_options.find { |o| o[:value] == @period }&.fetch(:label) || period_options.first[:label]
   end
 
   # { score: Integer (0-100), label: String }
@@ -50,11 +60,17 @@ class TestRunStatsPresenter
 
   # Returns DashboardPresenter::IntegrationTestRow objects for the data table.
   def test_rows
+    latest_runs = TestRun
+      .where(id: TestRun.group(:integration_test_id).select("MAX(id)"))
+      .index_by(&:integration_test_id)
+
     IntegrationTest.order(:name).map do |t|
-      stat = per_test_stats[t.id]
+      stat   = per_test_stats[t.id]
+      latest = latest_runs[t.id]
       DashboardPresenter::IntegrationTestRow.new(
+        id:        t.id,
         name:      t.name,
-        status:    stat ? stat.classification.to_s : nil,
+        status:    latest&.status,
         fail_rate: stat&.fail_rate,
         last_run:  stat&.last_run_at ? time_ago(stat.last_run_at) : nil
       )
@@ -112,6 +128,10 @@ class TestRunStatsPresenter
     return TestRun.all if cutoff_fn.nil?
 
     TestRun.where("created_at >= ?", cutoff_fn.call)
+  end
+
+  def default_period
+    @period_option_set == :index ? "all_time" : "last_month"
   end
 
   def score_label(score)
