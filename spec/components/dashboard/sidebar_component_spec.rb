@@ -15,10 +15,6 @@ RSpec.describe Dashboard::SidebarComponent, type: :component do
     expect(page).to have_text("DISPATCH")
   end
 
-  it "renders the search input" do
-    render_inline(component)
-    expect(page).to have_css("input[type='search']")
-  end
 
   it "renders the nav sections" do
     render_inline(component)

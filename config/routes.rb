@@ -26,7 +26,12 @@ Rails.application.routes.draw do
   end
 
   root "dashboard#index"
-  resources :deployments, only: [ :index ]
+  resources :deployments,    only: [ :index ]
+  resources :environments,   only: [ :index ]
+  resources :flaky_tests,    only: [ :index ]
+  resources :pr_monitor,     only: [ :index ]
+  resources :updates,        only: [ :index ]
+  resources :settings,       only: [ :index ]
   resources :integration_tests, only: [ :index, :show ] do
     collection { post :run }
     member     { post :run }
