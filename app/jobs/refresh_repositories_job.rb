@@ -10,12 +10,15 @@ class RefreshRepositoriesJob < ApplicationJob
     data = YAML.safe_load(yaml, permitted_classes: [], aliases: true)
     repos = data.fetch("repositories", [])
 
+    merge_only_list = Array(Settings.merge_only_repositories).map(&:to_s)
+
     repos.each do |attrs|
       repo = Repository.for(attrs["name"])
       repo.cocina_models_update = attrs.fetch("cocina_models_update", false)
       repo.exclude_envs         = attrs["exclude_envs"].to_a
       repo.non_standard_envs    = attrs["non_standard_envs"].to_a
       repo.skip_audit           = attrs.fetch("skip_audit", false)
+      repo.merge_only           = merge_only_list.include?(attrs["name"].to_s)
       repo.last_updated         = Date.current
       repo.save!
     end

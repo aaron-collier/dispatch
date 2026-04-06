@@ -20,6 +20,7 @@ RSpec.describe RefreshRepositoriesJob, type: :job do
   before do
     allow(Net::HTTP).to receive(:get).and_return(yaml_content)
     allow(FetchDependencyUpdatesJob).to receive(:perform_later)
+    allow(Settings).to receive(:merge_only_repositories).and_return([ "sul-dlss/dlme-airflow" ])
   end
 
   describe "#perform" do
@@ -52,6 +53,16 @@ RSpec.describe RefreshRepositoriesJob, type: :job do
       described_class.perform_now
       expect(Repository.where(name: "sul-dlss/argo").count).to eq(1)
       expect(Repository.find_by(name: "sul-dlss/argo").cocina_models_update).to be(true)
+    end
+
+    it "sets merge_only to true for repos in Settings.merge_only_repositories" do
+      described_class.perform_now
+      expect(Repository.find_by(name: "sul-dlss/dlme-airflow").merge_only).to be(true)
+    end
+
+    it "sets merge_only to false for repos not in Settings.merge_only_repositories" do
+      described_class.perform_now
+      expect(Repository.find_by(name: "sul-dlss/argo").merge_only).to be(false)
     end
 
     it "enqueues FetchDependencyUpdatesJob after completing" do
