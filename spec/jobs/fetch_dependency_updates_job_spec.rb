@@ -41,11 +41,20 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
       expect(UpdatePullRequest.last.build_passing?).to be(true)
     end
 
-    it "broadcasts a Turbo Stream replace to dependency_updates" do
+    it "broadcasts a Turbo Stream replace for the card" do
       described_class.perform_now
       expect(Turbo::StreamsChannel).to have_received(:broadcast_replace_to).with(
         "dependency_updates",
         target: "dependency_update_card",
+        html: anything
+      )
+    end
+
+    it "broadcasts a Turbo Stream replace for the feed" do
+      described_class.perform_now
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_replace_to).with(
+        "dependency_updates",
+        target: "dependency_update_feed",
         html: anything
       )
     end

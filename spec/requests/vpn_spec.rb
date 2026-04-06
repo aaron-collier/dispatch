@@ -15,6 +15,7 @@ RSpec.describe "Vpn", type: :request do
 
     it "responds with a turbo stream" do
       allow(VpnService).to receive(:connected?).and_return(false)
+      SystemStatus.create!(name: "vpn", connected: false, status: "disconnected")
       post connect_vpn_path
       expect(response.content_type).to include("text/vnd.turbo-stream.html")
     end

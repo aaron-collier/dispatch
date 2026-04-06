@@ -55,10 +55,13 @@
       <%# First slot: live Dependency Updates card %>
       <div class="col-12 col-sm-6 col-lg-4">
         <%= render Dashboard::DependencyUpdateCardComponent.new(
-          open_count: @dependency_card[:open_count],
-          passing:    @dependency_card[:passing],
-          building:   @dependency_card[:building],
-          failing:    @dependency_card[:failing]
+          open_count:       @dependency_card[:open_count],
+          passing:          @dependency_card[:passing],
+          building:         @dependency_card[:building],
+          failing:          @dependency_card[:failing],
+          all_merged:       @dependency_card[:all_merged],
+          merge_all_path:   merge_all_dependency_updates_path,
+          release_all_path: release_all_dependency_updates_path
         ) %>
       </div>
 
@@ -106,9 +109,9 @@
       </div>
 
       <div class="col-12 col-lg-6">
-        <%= render Dashboard::PanelCardComponent.new(title: "Recent Activity") do |c| %>
+        <%= render Dashboard::PanelCardComponent.new(title: "Dependency Updates") do |c| %>
           <% c.with_body do %>
-            <%= render Dashboard::ActivityFeedComponent.new(activities: @presenter.activity_feed) %>
+            <%= render Dashboard::DependencyUpdateFeedComponent.new(rows: @dependency_updates_feed) %>
           <% end %>
         <% end %>
       </div>
