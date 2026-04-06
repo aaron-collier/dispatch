@@ -11,8 +11,38 @@ name: Test User
 control_master_host: ~
 vpn_host: ~
 
-repository_source: https://raw.githubusercontent.com/sul-dlss/sdr-deploy/main/config/settings.yml
+repository_source: https://raw.githubusercontent.com/sul-dlss/access-update-scripts/refs/heads/main/infrastructure/projects.yml
 update_branch: update-dependencies
+
+merge_only_repositories:
+  - sul-dlss/rialto-airflow
+  - sul-dlss/argo-b3
+  - sul-dlss/assembly-image
+  - sul-dlss/assembly-objectfile
+  - sul-dlss/cocina-models
+  - sul-dlss/datacite-ruby
+  - sul-dlss/dlme-transform
+  - sul-dlss/dlss-capistrano-docker
+  - sul-dlss/dor-event-client
+  - sul-dlss/dor-services-client
+  - sul-dlss/druid-tools
+  - sul-dlss/folio_client
+  - sul-dlss/globus_client
+  - sul-dlss/infrastructure-integration-test
+  - sul-dlss/lyber-core
+  - sul-dlss/mais_orcid_client
+  - sul-dlss/mais_person_client
+  - sul-dlss/moab-versioning
+  - sul-dlss/orcid_client
+  - sul-dlss/preservation-client
+  - sul-dlss/sdr-client
+  - sul-dlss/sdr-deploy
+  - sul-dlss/wasapi_client
+  - LD4P/rdf2marc
+  - LD4P/sinopia_api
+  - LD4P/sinopia_editor
+  - LD4P/sinopia_exporter
+  - LD4P/sinopia_indexing_pipeline
 
 honeybadger_api:
   url: https://app.honeybadger.io/v2
