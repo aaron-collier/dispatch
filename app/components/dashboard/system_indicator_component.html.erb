@@ -6,13 +6,13 @@
           data: { turbo_method: :post },
           class: "dispatch-system-indicator__status",
           style: "color: #{status_color}; text-decoration: none;",
-          title: "Click to connect control master" %>
+          title: "Click to connect #{label.downcase}" %>
   <% elsif disconnect_path && resolved_status == "connected" %>
     <%= link_to status_text, disconnect_path,
           data: { turbo_method: :post },
           class: "dispatch-system-indicator__status",
           style: "color: #{status_color}; text-decoration: none;",
-          title: "Click to disconnect control master" %>
+          title: "Click to disconnect #{label.downcase}" %>
   <% else %>
     <span class="dispatch-system-indicator__status" style="color: <%= status_color %>;"><%= status_text %></span>
   <% end %>
