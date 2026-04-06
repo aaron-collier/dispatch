@@ -1,7 +1,18 @@
 <div id="dependency_update_card" class="dispatch-card p-3 h-100">
-  <div class="dispatch-label mb-2">
-    DEPENDENCY UPDATES
-    <i class="bi bi-info-circle ms-1" style="font-size: 0.625rem;"></i>
+  <div class="d-flex align-items-center justify-content-between mb-2">
+    <div class="dispatch-label">
+      DEPENDENCY UPDATES
+      <i class="bi bi-info-circle ms-1" style="font-size: 0.625rem;"></i>
+    </div>
+    <% if show_merge_button? %>
+      <%= link_to "MERGE ALL", merge_all_path,
+          data: { turbo_method: :post },
+          style: "font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; color: var(--dispatch-dora-elite); border: 1px solid var(--dispatch-dora-elite); border-radius: 4px; padding: 2px 8px; text-decoration: none;" %>
+    <% elsif show_release_button? %>
+      <%= link_to "RELEASE", release_all_path,
+          data: { turbo_method: :post },
+          style: "font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; color: var(--dispatch-purple-light); border: 1px solid var(--dispatch-purple-light); border-radius: 4px; padding: 2px 8px; text-decoration: none;" %>
+    <% end %>
   </div>
 
   <div class="dispatch-stat-value mb-2"><%= open_count %></div>

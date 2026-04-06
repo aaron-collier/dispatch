@@ -1,4 +1,6 @@
 class FetchDependencyUpdatesJob < ApplicationJob
+  include DependencyUpdatesBroadcaster
+
   queue_as :default
 
   def perform
@@ -9,6 +11,7 @@ class FetchDependencyUpdatesJob < ApplicationJob
     end
 
     broadcast_card
+    broadcast_feed
   end
 
   private
@@ -49,21 +52,5 @@ class FetchDependencyUpdatesJob < ApplicationJob
     :passing
   rescue Octokit::NotFound, Octokit::Forbidden
     :passing
-  end
-
-  def broadcast_card
-    Turbo::StreamsChannel.broadcast_replace_to(
-      "dependency_updates",
-      target: "dependency_update_card",
-      html: ApplicationController.render(
-        Dashboard::DependencyUpdateCardComponent.new(
-          open_count: UpdatePullRequest.status_open.count,
-          passing:    UpdatePullRequest.status_open.build_passing.count,
-          building:   UpdatePullRequest.status_open.build_building.count,
-          failing:    UpdatePullRequest.status_open.build_failing.count
-        ),
-        layout: false
-      )
-    )
   end
 end

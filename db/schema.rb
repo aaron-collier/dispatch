@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_04_184829) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_06_034203) do
   create_table "deployments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "date", null: false
@@ -52,6 +52,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_184829) do
     t.string "name", null: false
     t.text "non_standard_envs"
     t.string "project_id"
+    t.string "release_tag"
     t.boolean "skip_audit", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_repositories_on_name", unique: true

@@ -20,6 +20,11 @@ Rails.application.routes.draw do
     post :connect, as: :connect_vpn
   end
 
+  scope "/dependency_updates", controller: :dependency_updates do
+    post :merge_all, as: :merge_all_dependency_updates
+    post :release_all, as: :release_all_dependency_updates
+  end
+
   root "dashboard#index"
   resources :deployments, only: [ :index ]
 end
