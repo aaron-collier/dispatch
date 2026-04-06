@@ -10,10 +10,10 @@
 #     schedule: at 5am every day
 
 default: &default
-  check_vpn:
-    class: CheckVpnJob
+  keep_alive_vpn:
+    class: KeepAliveVpnJob
     queue: default
-    schedule: every minute
+    schedule: every 5 minutes
   keep_alive_control_master:
     class: KeepAliveControlMasterJob
     queue: default

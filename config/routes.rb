@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     post :disconnect, as: :disconnect_control_master
   end
 
+  scope "/vpn", controller: :vpn do
+    post :connect, as: :connect_vpn
+  end
+
   root "dashboard#index"
   resources :deployments, only: [ :index ]
 end

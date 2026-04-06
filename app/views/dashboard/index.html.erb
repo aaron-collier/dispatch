@@ -34,9 +34,11 @@
     <%# ── System indicators ───────────────────────────────── %>
     <div class="dispatch-system-indicators mb-3">
       <%= render Dashboard::SystemIndicatorComponent.new(
-        key:       "vpn",
-        label:     "VPN",
-        connected: @system_statuses["vpn"]&.connected || false
+        key:          "vpn",
+        label:        "VPN",
+        connected:    @system_statuses["vpn"]&.connected || false,
+        status:       @system_statuses["vpn"]&.status || "disconnected",
+        connect_path: connect_vpn_path
       ) %>
       <%= render Dashboard::SystemIndicatorComponent.new(
         key:            "control_master",
