@@ -1,0 +1,74 @@
+<%# Mobile header — hamburger, visible < 768px only %>
+<div class="dispatch-mobile-header" data-controller="sidebar">
+  <button class="btn btn-link p-0 text-decoration-none"
+          data-action="click->sidebar#open"
+          aria-label="Open navigation">
+    <i class="bi bi-list" style="font-size: 1.25rem; color: var(--dispatch-text-primary);"></i>
+  </button>
+  <span class="ms-3 fw-semibold" style="color: var(--dispatch-text-primary); font-size: 0.9375rem;">Dispatch</span>
+
+  <%# Bootstrap Offcanvas drawer for mobile %>
+  <div class="offcanvas offcanvas-start"
+       id="sidebar-drawer"
+       data-sidebar-target="drawer"
+       style="width: 220px; background-color: var(--dispatch-sidebar-bg); border-right: 1px solid var(--dispatch-card-border);"
+       tabindex="-1"
+       aria-labelledby="sidebar-drawer-label">
+    <div class="offcanvas-body p-0">
+      <%= render Dashboard::SidebarComponent.new(user: @user, active_path: "/integration_tests") %>
+    </div>
+  </div>
+</div>
+
+<%# Main layout wrapper %>
+<div class="dispatch-root">
+  <%# Desktop / tablet sidebar %>
+  <%= render Dashboard::SidebarComponent.new(user: @user, active_path: "/integration_tests") %>
+
+  <%# Scrollable content area %>
+  <main class="dispatch-content">
+    <%= turbo_stream_from "integration_tests" %>
+
+    <%# ── Page header ─────────────────────────────────── %>
+    <div class="mb-4">
+      <h1 class="dispatch-page-title">Test Suite</h1>
+    </div>
+
+    <%# ── Content ─────────────────────────────────────── %>
+    <div class="dispatch-card h-100">
+      <div class="dispatch-card__header">
+        <span class="dispatch-label">Stability Overview</span>
+        <div class="d-flex align-items-center gap-2">
+          <%= render Dashboard::FilterPillComponent.new(
+            options:     @stats.period_options,
+            selected:    @stats.selected_period_label,
+            link_param:  "period",
+            base_path:   integration_tests_path,
+            turbo_frame: "stability-panel"
+          ) %>
+          <span id="run-tests-btn">
+            <%= link_to "RUN TESTS", run_integration_tests_path,
+                data: { turbo_method: :post },
+                style: "font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; color: var(--dispatch-dora-elite); border: 1px solid var(--dispatch-dora-elite); border-radius: 4px; padding: 2px 8px; text-decoration: none;" %>
+          </span>
+        </div>
+      </div>
+      <div class="dispatch-card__body">
+        <%= turbo_frame_tag "stability-panel" do %>
+          <%= render Dashboard::HealthScoreComponent.new(
+            score:    @stats.health_score[:score],
+            label:    @stats.health_score[:label],
+            segments: @stats.health_segments
+          ) %>
+          <div class="mt-3">
+            <%= render IntegrationTests::TestTableComponent.new(
+              rows:  @stats.test_rows,
+              tests: IntegrationTest.order(:name).index_by(&:name)
+            ) %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+  </main>
+</div>

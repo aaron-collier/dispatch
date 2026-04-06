@@ -12,8 +12,9 @@
       <% rows.each do |row| %>
         <tr>
           <td>
-            <% if row.id.present? %>
-              <%= link_to row.name, integration_test_path(row.id),
+            <% test = tests[row.name] %>
+            <% if test %>
+              <%= link_to row.name.upcase, integration_test_path(test),
                   class: "dispatch-table__name font-mono",
                   style: "text-decoration: none; color: inherit;",
                   data: { turbo_frame: "_top" } %>
@@ -27,7 +28,7 @@
                                   "passed"  => "var(--dispatch-success)",   "failed"  => "var(--dispatch-danger)" }
                                 .fetch(row.status.to_s, "var(--dispatch-text-muted)") %>
               <span class="badge" style="background-color: var(--dispatch-card-bg-elevated); color: <%= status_color %>; font-size: 0.6875rem; font-weight: 400;">
-                <%= row.status %>
+                <%= row.status.upcase %>
               </span>
             <% else %>
               <span class="dispatch-table__muted">—</span>

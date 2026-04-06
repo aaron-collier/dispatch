@@ -15,7 +15,7 @@ class DependencyUpdatesController < ApplicationController
                 status: UpdatePullRequest.statuses[:merged],
                 updated_at: 1.day.ago..
               })
-              .where(release_tag: nil)
+              .where(release_tag: nil, merge_only: false)
               .distinct
               .each { |repo| CreateReleaseJob.perform_later(repo.id) }
     render turbo_stream: turbo_stream.replace(

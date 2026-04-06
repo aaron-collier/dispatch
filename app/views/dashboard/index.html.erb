@@ -85,13 +85,20 @@
         <div class="dispatch-card h-100">
           <div class="dispatch-card__header">
             <span class="dispatch-label">Stability Overview</span>
-            <%= render Dashboard::FilterPillComponent.new(
-              options:     @stats.period_options,
-              selected:    @stats.selected_period_label,
-              link_param:  "stability_period",
-              base_path:   root_path,
-              turbo_frame: "stability-panel"
-            ) %>
+            <div class="d-flex align-items-center gap-2">
+              <%= render Dashboard::FilterPillComponent.new(
+                options:     @stats.period_options,
+                selected:    @stats.selected_period_label,
+                link_param:  "stability_period",
+                base_path:   root_path,
+                turbo_frame: "stability-panel"
+              ) %>
+              <span id="run-tests-btn">
+                <%= link_to "RUN TESTS", run_integration_tests_path,
+                    data: { turbo_method: :post },
+                    style: "font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; color: var(--dispatch-dora-elite); border: 1px solid var(--dispatch-dora-elite); border-radius: 4px; padding: 2px 8px; text-decoration: none;" %>
+              </span>
+            </div>
           </div>
           <div class="dispatch-card__body">
             <%= turbo_frame_tag "stability-panel" do %>

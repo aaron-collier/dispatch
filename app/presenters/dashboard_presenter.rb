@@ -1,6 +1,6 @@
 class DashboardPresenter
   StatCard          = Struct.new(:label, :value, :delta, :delta_direction, :sparkline_data, keyword_init: true)
-  IntegrationTestRow = Struct.new(:name, :status, :fail_rate, :last_run, keyword_init: true)
+  IntegrationTestRow = Struct.new(:id, :name, :status, :fail_rate, :last_run, keyword_init: true)
   Activity   = Struct.new(:icon, :icon_color, :message, :timestamp, :actor, keyword_init: true)
   ChartPoint = Struct.new(:label, :value, keyword_init: true)
   DonutSlice = Struct.new(:label, :value, :color, keyword_init: true)

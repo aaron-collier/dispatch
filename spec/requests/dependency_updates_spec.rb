@@ -67,5 +67,13 @@ RSpec.describe "DependencyUpdates", type: :request do
       post release_all_dependency_updates_path
       expect(CreateReleaseJob).not_to have_received(:perform_later)
     end
+
+    it "does not enqueue jobs for merge_only repos" do
+      merge_only_repo = create(:repository, name: "sul-dlss/merge-only-repo", merge_only: true)
+      create(:update_pull_request, :merged, repository: merge_only_repo, pull_request: 300,
+             updated_at: 1.hour.ago)
+      post release_all_dependency_updates_path
+      expect(CreateReleaseJob).not_to have_received(:perform_later).with(merge_only_repo.id)
+    end
   end
 end

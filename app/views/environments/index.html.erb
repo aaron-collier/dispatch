@@ -1,0 +1,34 @@
+<%# Mobile header — hamburger, visible < 768px only %>
+<div class="dispatch-mobile-header" data-controller="sidebar">
+  <button class="btn btn-link p-0 text-decoration-none"
+          data-action="click->sidebar#open"
+          aria-label="Open navigation">
+    <i class="bi bi-list" style="font-size: 1.25rem; color: var(--dispatch-text-primary);"></i>
+  </button>
+  <span class="ms-3 fw-semibold" style="color: var(--dispatch-text-primary); font-size: 0.9375rem;">Dispatch</span>
+
+  <%# Bootstrap Offcanvas drawer for mobile %>
+  <div class="offcanvas offcanvas-start"
+       id="sidebar-drawer"
+       data-sidebar-target="drawer"
+       style="width: 220px; background-color: var(--dispatch-sidebar-bg); border-right: 1px solid var(--dispatch-card-border);"
+       tabindex="-1"
+       aria-labelledby="sidebar-drawer-label">
+    <div class="offcanvas-body p-0">
+      <%= render Dashboard::SidebarComponent.new(user: @user, active_path: "/environments") %>
+    </div>
+  </div>
+</div>
+
+<%# Main layout wrapper %>
+<div class="dispatch-root">
+  <%# Desktop / tablet sidebar %>
+  <%= render Dashboard::SidebarComponent.new(user: @user, active_path: "/environments") %>
+
+  <%# Scrollable content area %>
+  <main class="dispatch-content">
+    <div class="mb-4">
+      <h1 class="dispatch-page-title">Environments - Coming Soon</h1>
+    </div>
+  </main>
+</div>

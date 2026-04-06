@@ -12,14 +12,14 @@ module Dashboard
       {
         label: "Testing",
         items: [
-          { label: "Test Suites", icon: "bi-check2-circle", path: "/test-suites" },
-          { label: "Flaky Tests", icon: "bi-bug",           path: "/flaky-tests" }
+          { label: "Test Suite", icon: "bi-check2-circle", path: "/integration_tests" },
+          { label: "Flaky Tests", icon: "bi-bug",           path: "/flaky_tests" }
         ]
       },
       {
         label: "Dependencies",
         items: [
-          { label: "PR Monitor", icon: "bi-git",          path: "/pr-monitor" },
+          { label: "PR Monitor", icon: "bi-git",          path: "/pr_monitor" },
           { label: "Updates",    icon: "bi-arrow-repeat", path: "/updates" }
         ]
       },

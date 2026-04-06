@@ -10,8 +10,8 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
       head: double(ref: "update-dependencies", sha: "abc123"))
   end
 
-  let(:check_runs_response) do
-    { check_runs: [ double("run", status: "completed", conclusion: "success") ] }
+  let(:combined_status_response) do
+    double("status", state: "success", total_count: 1)
   end
 
   before do
@@ -19,7 +19,7 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
     allow(Octokit::Client).to receive(:new).and_return(client)
     allow(client).to receive(:pull_requests).and_return([ open_pr ])
     allow(client).to receive(:pull_request).and_return(open_pr)
-    allow(client).to receive(:check_runs_for_ref).and_return(check_runs_response)
+    allow(client).to receive(:combined_status).and_return(combined_status_response)
     allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
     allow(ApplicationController).to receive(:render).and_return("<div></div>")
     allow(Settings).to receive(:update_branch).and_return("update-dependencies")
@@ -64,9 +64,9 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
       expect { described_class.perform_now }.not_to change(UpdatePullRequest, :count)
     end
 
-    context "when a PR has an in-progress check" do
-      let(:check_runs_response) do
-        { check_runs: [ double("run", status: "in_progress", conclusion: nil) ] }
+    context "when the combined status is pending" do
+      let(:combined_status_response) do
+        double("status", state: "pending", total_count: 1)
       end
 
       it "sets build to building" do
@@ -75,9 +75,9 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
       end
     end
 
-    context "when a PR has a failing check" do
-      let(:check_runs_response) do
-        { check_runs: [ double("run", status: "completed", conclusion: "failure") ] }
+    context "when the combined status is failure" do
+      let(:combined_status_response) do
+        double("status", state: "failure", total_count: 1)
       end
 
       it "sets build to failing" do
@@ -86,9 +86,9 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
       end
     end
 
-    context "when a PR has a cancelled check" do
-      let(:check_runs_response) do
-        { check_runs: [ double("run", status: "completed", conclusion: "cancelled") ] }
+    context "when the combined status is error" do
+      let(:combined_status_response) do
+        double("status", state: "error", total_count: 1)
       end
 
       it "sets build to failing" do
@@ -97,47 +97,14 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
       end
     end
 
-    context "when a PR has a timed out check" do
-      let(:check_runs_response) do
-        { check_runs: [ double("run", status: "completed", conclusion: "timed_out") ] }
+    context "when there are no statuses" do
+      let(:combined_status_response) do
+        double("status", state: "pending", total_count: 0)
       end
 
-      it "sets build to failing" do
+      it "sets build to passing" do
         described_class.perform_now
-        expect(UpdatePullRequest.last.build_failing?).to be(true)
-      end
-    end
-
-    context "when a PR has an action_required check" do
-      let(:check_runs_response) do
-        { check_runs: [ double("run", status: "completed", conclusion: "action_required") ] }
-      end
-
-      it "sets build to failing" do
-        described_class.perform_now
-        expect(UpdatePullRequest.last.build_failing?).to be(true)
-      end
-    end
-
-    context "when a PR has a startup_failure check" do
-      let(:check_runs_response) do
-        { check_runs: [ double("run", status: "completed", conclusion: "startup_failure") ] }
-      end
-
-      it "sets build to failing" do
-        described_class.perform_now
-        expect(UpdatePullRequest.last.build_failing?).to be(true)
-      end
-    end
-
-    context "when a PR has a queued check" do
-      let(:check_runs_response) do
-        { check_runs: [ double("run", status: "queued", conclusion: nil) ] }
-      end
-
-      it "sets build to building" do
-        described_class.perform_now
-        expect(UpdatePullRequest.last.build_building?).to be(true)
+        expect(UpdatePullRequest.last.build_passing?).to be(true)
       end
     end
 
