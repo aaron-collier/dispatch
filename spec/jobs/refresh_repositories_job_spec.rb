@@ -3,17 +3,12 @@ require "rails_helper"
 RSpec.describe RefreshRepositoriesJob, type: :job do
   let(:yaml_content) do
     <<~YAML
-      repositories:
-        - name: sul-dlss/argo
-          cocina_models_update: true
-        - name: sul-dlss/speech-to-text
-          exclude_envs:
-            - prod
-            - stage
-          skip_audit: true
-        - name: sul-dlss/dlme-airflow
-          non_standard_envs:
-            - dev
+      projects:
+        - repo: sul-dlss/argo
+          cocina_level2: true
+        - repo: sul-dlss/speech-to-text
+        - repo: sul-dlss/dlme-airflow
+          cocina_level2: false
     YAML
   end
 
@@ -28,24 +23,14 @@ RSpec.describe RefreshRepositoriesJob, type: :job do
       expect { described_class.perform_now }.to change(Repository, :count).by(3)
     end
 
-    it "sets cocina_models_update correctly" do
+    it "sets cocina_models_update from cocina_level2" do
       described_class.perform_now
       expect(Repository.find_by(name: "sul-dlss/argo").cocina_models_update).to be(true)
     end
 
-    it "sets exclude_envs as an array" do
+    it "defaults cocina_models_update to false when cocina_level2 is absent" do
       described_class.perform_now
-      expect(Repository.find_by(name: "sul-dlss/speech-to-text").exclude_envs).to eq([ "prod", "stage" ])
-    end
-
-    it "sets non_standard_envs as an array" do
-      described_class.perform_now
-      expect(Repository.find_by(name: "sul-dlss/dlme-airflow").non_standard_envs).to eq([ "dev" ])
-    end
-
-    it "sets skip_audit correctly" do
-      described_class.perform_now
-      expect(Repository.find_by(name: "sul-dlss/speech-to-text").skip_audit).to be(true)
+      expect(Repository.find_by(name: "sul-dlss/speech-to-text").cocina_models_update).to be(false)
     end
 
     it "updates an existing record rather than creating a duplicate" do
