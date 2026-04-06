@@ -3,7 +3,8 @@ require "open3"
 class IntegrationTestRunnerJob < ApplicationJob
   queue_as :default
 
-  REPO_PATH = Rails.root.join("tmp/infrastructure-integration-test").freeze
+  REPO_PATH       = Rails.root.join("tmp/infrastructure-integration-test").freeze
+  SETTINGS_FILE   = REPO_PATH.join("config/settings/stage.local.yml").freeze
 
   def perform(test_run_id)
     test_run = TestRun.find(test_run_id)
@@ -14,6 +15,13 @@ class IntegrationTestRunnerJob < ApplicationJob
 
     unless Dir.exist?(REPO_PATH)
       test_run.update!(output: "Test directory not found. Run the full suite first.")
+      test_run.fail!
+      broadcast(test_run)
+      return
+    end
+
+    unless File.exist?(SETTINGS_FILE)
+      test_run.update!(output: "Missing config/settings/stage.local.yml in the test repo. Copy it from your local infrastructure-integration-test checkout into config/settings/ in this app.")
       test_run.fail!
       broadcast(test_run)
       return

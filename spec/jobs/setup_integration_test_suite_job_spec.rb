@@ -13,6 +13,8 @@ RSpec.describe SetupIntegrationTestSuiteJob, type: :job do
 
   before do
     allow(FileUtils).to receive(:rm_rf)
+    allow(FileUtils).to receive(:mkdir_p)
+    allow(FileUtils).to receive(:cp)
     allow_any_instance_of(described_class).to receive(:system) { |_, *args| system_calls << args.find { |a| a.is_a?(String) } } # rubocop:disable RSpec/AnyInstance
     allow(Dir).to receive(:chdir).with(repo_path).and_yield
     allow(Dir).to receive(:glob).and_return(spec_files)
@@ -33,6 +35,14 @@ RSpec.describe SetupIntegrationTestSuiteJob, type: :job do
     it "runs bundle install" do
       described_class.perform_now
       expect(system_calls).to include("bundle install")
+    end
+
+    it "copies stage.local.yml into the cloned repo" do
+      described_class.perform_now
+      expect(FileUtils).to have_received(:cp).with(
+        Rails.root.join("config/settings/stage.local.yml"),
+        repo_path.join("config/settings/stage.local.yml")
+      )
     end
 
     it "finds or creates an IntegrationTest for each spec file" do
