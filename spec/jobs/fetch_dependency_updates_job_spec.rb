@@ -86,6 +86,61 @@ RSpec.describe FetchDependencyUpdatesJob, type: :job do
       end
     end
 
+    context "when a PR has a cancelled check" do
+      let(:check_runs_response) do
+        { check_runs: [ double("run", status: "completed", conclusion: "cancelled") ] }
+      end
+
+      it "sets build to failing" do
+        described_class.perform_now
+        expect(UpdatePullRequest.last.build_failing?).to be(true)
+      end
+    end
+
+    context "when a PR has a timed out check" do
+      let(:check_runs_response) do
+        { check_runs: [ double("run", status: "completed", conclusion: "timed_out") ] }
+      end
+
+      it "sets build to failing" do
+        described_class.perform_now
+        expect(UpdatePullRequest.last.build_failing?).to be(true)
+      end
+    end
+
+    context "when a PR has an action_required check" do
+      let(:check_runs_response) do
+        { check_runs: [ double("run", status: "completed", conclusion: "action_required") ] }
+      end
+
+      it "sets build to failing" do
+        described_class.perform_now
+        expect(UpdatePullRequest.last.build_failing?).to be(true)
+      end
+    end
+
+    context "when a PR has a startup_failure check" do
+      let(:check_runs_response) do
+        { check_runs: [ double("run", status: "completed", conclusion: "startup_failure") ] }
+      end
+
+      it "sets build to failing" do
+        described_class.perform_now
+        expect(UpdatePullRequest.last.build_failing?).to be(true)
+      end
+    end
+
+    context "when a PR has a queued check" do
+      let(:check_runs_response) do
+        { check_runs: [ double("run", status: "queued", conclusion: nil) ] }
+      end
+
+      it "sets build to building" do
+        described_class.perform_now
+        expect(UpdatePullRequest.last.build_building?).to be(true)
+      end
+    end
+
     context "when the PR branch does not match update_branch" do
       let(:open_pr) do
         double("PR", number: 99, head: double(ref: "some-other-branch", sha: "xyz"))

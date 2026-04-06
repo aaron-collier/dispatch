@@ -5,7 +5,8 @@ class MergePullRequestJob < ApplicationJob
 
   def perform(repository_id, pull_request_number)
     repo = Repository.find(repository_id)
-    octokit_client.merge_pull_request(repo.name, pull_request_number, "Merged by dispatch")
+    octokit_client.create_pull_request_review(pr[:repo], pr[:number], body: 'Approved by automated merge script', event: 'APPROVE')
+    octokit_client.merge_pull_request(repo.name, pull_request_number, "Merged by automated merge script")
     UpdatePullRequest.find_by!(pull_request: pull_request_number).update!(status: :merged)
     broadcast_card
     broadcast_feed

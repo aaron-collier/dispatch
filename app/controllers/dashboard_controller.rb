@@ -6,6 +6,7 @@ class DashboardController < ApplicationController
     @system_statuses = SystemStatus.all.index_by(&:name)
     KeepAliveVpnJob.perform_later
     RefreshRepositoriesJob.perform_later if Repository.none?
+    FetchDependencyUpdatesJob.perform_later
 
     @dependency_card = {
       open_count: UpdatePullRequest.status_open.count,
