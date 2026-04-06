@@ -15,7 +15,7 @@ RSpec.describe SetupIntegrationTestSuiteJob, type: :job do
     allow(FileUtils).to receive(:rm_rf)
     allow(FileUtils).to receive(:mkdir_p)
     allow(FileUtils).to receive(:cp)
-    allow_any_instance_of(described_class).to receive(:system) { |_, *args| system_calls << args.find { |a| a.is_a?(String) } } # rubocop:disable RSpec/AnyInstance
+    allow_any_instance_of(described_class).to receive(:system) { |_, *args| system_calls << args.select { |a| a.is_a?(String) }.join(" ") } # rubocop:disable RSpec/AnyInstance
     allow(Dir).to receive(:chdir).with(repo_path).and_yield
     allow(Dir).to receive(:glob).and_return(spec_files)
     allow(IntegrationTestRunnerJob).to receive(:perform_later)

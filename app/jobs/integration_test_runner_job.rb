@@ -33,9 +33,17 @@ class IntegrationTestRunnerJob < ApplicationJob
       "SETTINGS__SUNET__ID"    => Settings.sunetid.to_s,
       "SETTINGS__SUNET__PASSWORD" => Settings.sunet_password.to_s
     }
+    spec_file = Dir.glob(REPO_PATH.join("spec/features/*_spec.rb").to_s)
+                   .find { |f| File.basename(f, "_spec.rb") == test.name }
+    unless spec_file
+      test_run.update!(output: "Spec file not found for test: #{test.name}")
+      test_run.fail!
+      broadcast(test_run)
+      return
+    end
     output, status = Open3.capture2e(
       env,
-      "bundle exec rspec spec/features/#{test.name}_spec.rb",
+      "bundle", "exec", "rspec", spec_file,
       chdir: REPO_PATH.to_s
     )
     success = status.success?

@@ -5,6 +5,7 @@ RSpec.describe IntegrationTestRunnerJob, type: :job do
   let(:test_run)         { create(:test_run, integration_test: integration_test) }
   let(:repo_path)        { Rails.root.join("tmp/infrastructure-integration-test") }
   let(:settings_file)    { repo_path.join("config/settings/stage.local.yml") }
+  let(:spec_file)        { repo_path.join("spec/features/argo_spec.rb").to_s }
 
   before do
     allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
@@ -18,7 +19,8 @@ RSpec.describe IntegrationTestRunnerJob, type: :job do
         allow(Dir).to receive(:exist?).with(repo_path).and_return(true)
         allow(File).to receive(:exist?).and_call_original
         allow(File).to receive(:exist?).with(settings_file).and_return(true)
-        allow(Dir).to receive(:chdir).with(repo_path).and_yield
+        allow(Dir).to receive(:glob).and_call_original
+        allow(Dir).to receive(:glob).with(repo_path.join("spec/features/*_spec.rb").to_s).and_return([ spec_file ])
         allow(Open3).to receive(:capture2e).and_return([ "1 example, 0 failures", double(success?: true) ])
       end
 
@@ -51,7 +53,8 @@ RSpec.describe IntegrationTestRunnerJob, type: :job do
         allow(Dir).to receive(:exist?).with(repo_path).and_return(true)
         allow(File).to receive(:exist?).and_call_original
         allow(File).to receive(:exist?).with(settings_file).and_return(true)
-        allow(Dir).to receive(:chdir).with(repo_path).and_yield
+        allow(Dir).to receive(:glob).and_call_original
+        allow(Dir).to receive(:glob).with(repo_path.join("spec/features/*_spec.rb").to_s).and_return([ spec_file ])
         allow(Open3).to receive(:capture2e).and_return([ "1 example, 1 failure", double(success?: false) ])
       end
 

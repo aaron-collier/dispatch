@@ -8,7 +8,7 @@ class SetupIntegrationTestSuiteJob < ApplicationJob
 
   def perform
     FileUtils.rm_rf(REPO_PATH)
-    system("git clone --branch main --depth 1 #{REPO_URL} #{REPO_PATH}")
+    system("git", "clone", "--branch", "main", "--depth", "1", REPO_URL, REPO_PATH.to_s)
     FileUtils.mkdir_p(REPO_PATH.join(".bundle"))
     FileUtils.mkdir_p(SETTINGS_DEST.dirname)
     FileUtils.cp(SETTINGS_SOURCE, SETTINGS_DEST)
