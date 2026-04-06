@@ -1,13 +1,17 @@
 class SetupIntegrationTestSuiteJob < ApplicationJob
   queue_as :default
 
-  REPO_URL  = "https://github.com/sul-dlss/infrastructure-integration-test".freeze
-  REPO_PATH = Rails.root.join("tmp/infrastructure-integration-test").freeze
+  REPO_URL        = "https://github.com/sul-dlss/infrastructure-integration-test".freeze
+  REPO_PATH       = Rails.root.join("tmp/infrastructure-integration-test").freeze
+  SETTINGS_SOURCE = Rails.root.join("config/settings/stage.local.yml").freeze
+  SETTINGS_DEST   = REPO_PATH.join("config/settings/stage.local.yml").freeze
 
   def perform
     FileUtils.rm_rf(REPO_PATH)
     system("git clone --branch main --depth 1 #{REPO_URL} #{REPO_PATH}")
     FileUtils.mkdir_p(REPO_PATH.join(".bundle"))
+    FileUtils.mkdir_p(SETTINGS_DEST.dirname)
+    FileUtils.cp(SETTINGS_SOURCE, SETTINGS_DEST)
     bundle_env = {
       "BUNDLE_GEMFILE"    => REPO_PATH.join("Gemfile").to_s,
       "BUNDLE_APP_CONFIG" => REPO_PATH.join(".bundle").to_s

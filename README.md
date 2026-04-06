@@ -105,6 +105,21 @@ honeybadger_api:
   url: https://app.honeybadger.io/v2
 ```
 
+### Integration test settings
+
+The integration test runner clones `sul-dlss/infrastructure-integration-test` into `tmp/` and copies `config/settings/stage.local.yml` from this app into the cloned repo before running tests. This file contains environment-specific secrets (credentials, hostnames, etc.) that the integration test suite requires.
+
+**Before running integration tests**, copy the file from your local `infrastructure-integration-test` checkout:
+
+```bash
+cp /path/to/infrastructure-integration-test/config/settings/stage.local.yml \
+   config/settings/stage.local.yml
+```
+
+This file is git-ignored. Without it, individual test runs will fail with a descriptive error.
+
+---
+
 ### Environment variable fallbacks
 
 The following settings can be supplied as environment variables instead of (or in addition to) `settings.local.yml`:

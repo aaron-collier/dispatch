@@ -4,6 +4,7 @@ RSpec.describe IntegrationTestRunnerJob, type: :job do
   let(:integration_test) { create(:integration_test, name: "argo") }
   let(:test_run)         { create(:test_run, integration_test: integration_test) }
   let(:repo_path)        { Rails.root.join("tmp/infrastructure-integration-test") }
+  let(:settings_file)    { repo_path.join("config/settings/stage.local.yml") }
 
   before do
     allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
@@ -15,6 +16,8 @@ RSpec.describe IntegrationTestRunnerJob, type: :job do
       before do
         allow(Dir).to receive(:exist?).and_call_original
         allow(Dir).to receive(:exist?).with(repo_path).and_return(true)
+        allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:exist?).with(settings_file).and_return(true)
         allow(Dir).to receive(:chdir).with(repo_path).and_yield
         allow(Open3).to receive(:capture2e).and_return([ "1 example, 0 failures", double(success?: true) ])
       end
@@ -46,6 +49,8 @@ RSpec.describe IntegrationTestRunnerJob, type: :job do
       before do
         allow(Dir).to receive(:exist?).and_call_original
         allow(Dir).to receive(:exist?).with(repo_path).and_return(true)
+        allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:exist?).with(settings_file).and_return(true)
         allow(Dir).to receive(:chdir).with(repo_path).and_yield
         allow(Open3).to receive(:capture2e).and_return([ "1 example, 1 failure", double(success?: false) ])
       end
@@ -75,6 +80,30 @@ RSpec.describe IntegrationTestRunnerJob, type: :job do
       it "saves an appropriate error message as output" do
         described_class.perform_now(test_run.id)
         expect(test_run.reload.output).to include("not found")
+      end
+
+      it "does not attempt to run rspec" do
+        described_class.perform_now(test_run.id)
+        expect(Open3).not_to receive(:capture2e)
+      end
+    end
+
+    context "when the settings file is missing" do
+      before do
+        allow(Dir).to receive(:exist?).and_call_original
+        allow(Dir).to receive(:exist?).with(repo_path).and_return(true)
+        allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:exist?).with(settings_file).and_return(false)
+      end
+
+      it "transitions the test run to failed" do
+        described_class.perform_now(test_run.id)
+        expect(test_run.reload.status).to eq("failed")
+      end
+
+      it "saves an appropriate error message as output" do
+        described_class.perform_now(test_run.id)
+        expect(test_run.reload.output).to include("stage.local.yml")
       end
 
       it "does not attempt to run rspec" do
