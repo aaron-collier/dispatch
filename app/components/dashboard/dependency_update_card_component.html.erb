@@ -1,8 +1,23 @@
 <div id="dependency_update_card" class="dispatch-card p-3 h-100">
-  <div class="d-flex align-items-center justify-content-between mb-2">
+  <div class="mb-2">
     <div class="dispatch-label">
       DEPENDENCY UPDATES
       <i class="bi bi-info-circle ms-1" style="font-size: 0.625rem;"></i>
+    </div>
+  </div>
+
+  <div class="dispatch-stat-value mb-2"><%= open_count %></div>
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <% sub_line_parts.each_with_index do |part, i| %>
+        <span style="font-size: 0.75rem; font-weight: 500; color: <%= part[:color] %>;">
+          <%= part[:count] %> <%= part[:label] %>
+        </span>
+        <% unless i == sub_line_parts.length - 1 %>
+          <span style="color: var(--dispatch-text-muted); font-size: 0.75rem;">/</span>
+        <% end %>
+      <% end %>
     </div>
     <% if show_merge_button? %>
       <%= link_to "MERGE ALL", merge_all_path,
@@ -12,19 +27,6 @@
       <%= link_to "RELEASE", release_all_path,
           data: { turbo_method: :post },
           style: "font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; color: var(--dispatch-purple-light); border: 1px solid var(--dispatch-purple-light); border-radius: 4px; padding: 2px 8px; text-decoration: none;" %>
-    <% end %>
-  </div>
-
-  <div class="dispatch-stat-value mb-2"><%= open_count %></div>
-
-  <div class="d-flex align-items-center gap-2 flex-wrap">
-    <% sub_line_parts.each_with_index do |part, i| %>
-      <span style="font-size: 0.75rem; font-weight: 500; color: <%= part[:color] %>;">
-        <%= part[:count] %> <%= part[:label] %>
-      </span>
-      <% unless i == sub_line_parts.length - 1 %>
-        <span style="color: var(--dispatch-text-muted); font-size: 0.75rem;">/</span>
-      <% end %>
     <% end %>
   </div>
 </div>

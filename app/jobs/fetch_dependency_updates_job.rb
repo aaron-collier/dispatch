@@ -43,13 +43,19 @@ class FetchDependencyUpdatesJob < ApplicationJob
   end
 
   def determine_build_status(client, repo_name, pr)
-    sha = pr.head.sha
-    check_runs = client.check_runs_for_ref(repo_name, sha)[:check_runs]
+    # sha = pr.head.sha
+    # check_runs = client.check_runs_for_ref(repo_name, sha)[:check_runs]
 
-    return :building if check_runs.any? { |r| r.status == "in_progress" }
-    return :failing  if check_runs.any? { |r| r.conclusion == "failure" }
+    # debugger if repo_name == 'sul_pub'
 
-    :passing
+    statuses = client.combined_status(repo_name, pr.head.sha)
+
+    return :passing if statuses.state == 'success' || statuses.total_count.zero?
+    return :building if statuses.state == 'pending'
+    # return :building if check_runs.any? { |r| %w[in_progress queued waiting].include?(r.status) }
+    # return :failing  if check_runs.any? { |r| %w[failure cancelled timed_out action_required startup_failure].include?(r.conclusion) }
+
+    :failing
   rescue Octokit::NotFound, Octokit::Forbidden
     :passing
   end
