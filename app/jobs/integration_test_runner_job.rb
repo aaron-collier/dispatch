@@ -41,12 +41,19 @@ class IntegrationTestRunnerJob < ApplicationJob
       broadcast(test_run)
       return
     end
-    output, status = Open3.capture2e(
-      env,
-      "bundle", "exec", "rspec", spec_file,
-      chdir: REPO_PATH.to_s
-    )
-    success = status.success?
+
+    output = nil
+    success = false
+
+    (Settings.max_retries_on_failure + 1).times do
+      output, status = Open3.capture2e(
+        env,
+        "bundle", "exec", "rspec", spec_file,
+        chdir: REPO_PATH.to_s
+      )
+      success = status.success?
+      break if success
+    end
 
     test_run.update!(output: output)
     success ? test_run.pass! : test_run.fail!
