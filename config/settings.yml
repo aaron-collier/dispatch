@@ -48,3 +48,5 @@ honeybadger_api:
   url: https://app.honeybadger.io/v2
   max_faults: 10
   max_deploys: 10
+
+max_retries_on_failure: 5
